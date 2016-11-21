@@ -80,8 +80,23 @@ def fix_ratings(df):
     df['Ratings'] = ratings
     return df
 
+def smell_feel(df):
+    #INPUT: df output of fix_ratings
+    #OUTPUT: same df with 'More Ratings' columns replaced with a smell and a feel column
 
+    the_smells = []
+    the_feels = []
+    for row in df['More Ratings']:
+        smell, feel = row.split(' | ')[1], row.split(' | ')[3]
+        smell = float(smell.split(': ')[1])
+        feel = float(feel.split(': ')[1])
+        the_smells.append(smell)
+        the_feels.append(feel)
 
+    df.drop(['More Ratings'], axis = 1, inplace = True, errors = 'ignore')
+    df['Smell'] = the_smells
+    df['Feel'] = the_feels
+    return df
 
 
 if __name__ == "__main__":
@@ -90,3 +105,4 @@ if __name__ == "__main__":
     df = dataframe_time(formatted_beer)
     df = abv_style(df)
     df = fix_ratings(df)
+    df = smell_feel(df)
