@@ -5,18 +5,19 @@ import pandas as pd
 
 def get_beer():
     #Gets beer data from beeradvocate.com
+    beer_info = []
 
     driver = webdriver.Chrome()
     driver.get("https://www.beeradvocate.com/beer/")
     assert "Beer" in driver.title
     beer_name = driver.find_element_by_id('ba-content')
-    beer_info = (beer_name.text).split('\n')[2:-1]
+    beer_info.append((beer_name.text).split('\n')[2:-1])
 
-    # #Go on to next 2 pages
-    # for i in range(2):
-    #     driver.get("https://www.beeradvocate.com/beer/?start={0}".format(i*25+25))
-    #     beer_name = driver.find_element_by_id('ba-content')
-    #     beer_info.append((beer_name.text).split('\n')[2:-1])
+    #Go on to next 2 pages
+    for i in range(2):
+        driver.get("https://www.beeradvocate.com/beer/?start={0}".format(i*25+25))
+        beer_name = driver.find_element_by_id('ba-content')
+        beer_info.append((beer_name.text).split('\n')[2:-1])
 
     driver.close()
     return beer_info
