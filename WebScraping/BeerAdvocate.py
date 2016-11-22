@@ -5,22 +5,24 @@ import pandas as pd
 
 def get_beer():
     #Gets beer data from beeradvocate.com
-    beer_info = []
+    all_beer_info = []
 
     driver = webdriver.Chrome()
     driver.get("https://www.beeradvocate.com/beer/")
     assert "Beer" in driver.title
     beer_name = driver.find_element_by_id('ba-content')
-    beer_info.append((beer_name.text).split('\n')[2:-1])
+    beer_info = (beer_name.text).split('\n')[2:-1]
+    all_beer_info.extend(beer_info)
 
     #Go on to next 2 pages
     for i in range(2):
         driver.get("https://www.beeradvocate.com/beer/?start={0}".format(i*25+25))
         beer_name = driver.find_element_by_id('ba-content')
-        beer_info.append((beer_name.text).split('\n')[2:-1])
+        beer_info = (beer_name.text).split('\n')[2:-1]
+        all_beer_info.extend(beer_info)
 
     driver.close()
-    return beer_info
+    return all_beer_info
 
 def parse_it_up(beer_info):
     #INPUT: beer info, list of beer information from beer advocate
@@ -40,7 +42,6 @@ def parse_it_up(beer_info):
 def dataframe_time(formatted_beer):
     #INPUT: formatted_beer_list, output from parse_it_up()
     #OUPUT: a formatted dataframe of our data
-
     df = pd.DataFrame(formatted_beer[1:]).iloc[:, 2:10]
     df.drop(df.columns[3], axis=1, inplace = True)
     df.drop(df.columns[-2], axis=1, inplace = True)
@@ -103,6 +104,7 @@ def smell_feel(df):
 if __name__ == "__main__":
     beer_info = get_beer()
     formatted_beer = parse_it_up(beer_info)
+    print formatted_beer
     df = dataframe_time(formatted_beer)
     df = abv_style(df)
     df = fix_ratings(df)
