@@ -14,9 +14,11 @@ def get_beer():
     beer_info = (beer_name.text).split('\n')[2:-1]
     all_beer_info.extend(beer_info)
 
-    #Go on to next 2 pages
-    for i in range(2):
-        driver.get("https://www.beeradvocate.com/beer/?start={0}".format(i*25+25))
+    #Go on to next pages
+    for i in range(13):
+        # https://www.beeradvocate.com/beer/?start=25
+        link = driver.find_element_by_link_text('next')
+        link.click()
         beer_name = driver.find_element_by_id('ba-content')
         beer_info = (beer_name.text).split('\n')[2:-1]
         all_beer_info.extend(beer_info)
@@ -109,3 +111,4 @@ if __name__ == "__main__":
     df = abv_style(df)
     df = fix_ratings(df)
     df = smell_feel(df)
+    df.to_csv('beers.csv')
