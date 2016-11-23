@@ -45,8 +45,3 @@ class BreweryDb:
         for endpoint in single_param_endpoints:
             fun = BreweryDb.__make_singlearg_endpoint_fun(endpoint)
             setattr(BreweryDb, endpoint.replace('/', '_'), fun)
-
-params =
-request = requests.get('http://api.brewerydb.com/v2/beers/?key=' + api_key)
-data = request.json()
-print data
