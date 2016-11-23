@@ -21,6 +21,6 @@ def store_beer(outfile):
 if __name__ == "__main__":
     BreweryDb.configure(api_key)
 
-    beer_list = get_beer(1, 840)
+    beer_list = get_beer(1, 399)
 
     store_beer('../Data/beerdb.json')
