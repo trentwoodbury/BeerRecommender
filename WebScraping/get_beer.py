@@ -7,7 +7,8 @@ def get_beer(start_page, qty):
     #output: json of beers
     beers = []
     for i in range(start_page, start_page+qty):
-        beers.append(BreweryDb.beers({'page' : i}))
+        beers.append(BreweryDb.beers({'page' : i, 'abv': "4,10"}))
+    return beers
 
 
 def store_beer(outfile):
