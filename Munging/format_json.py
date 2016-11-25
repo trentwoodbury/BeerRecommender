@@ -1,3 +1,5 @@
+import yaml
+
 def format_json(filepath):
     #INPUT: filepath to json file to be fixed up
     #OUTPUT: a list of python dictionaries in string format
@@ -44,3 +46,9 @@ def eval_doc(doc_item):
         output += doc_item[idx]
 
     return output
+
+if __name__ == "__main__":
+    first_formatted = format_json('../Data/data.json')
+    final_format = []
+    for item in first_formatted:
+        final_format.append(yaml.load(eval_doc(item)))
