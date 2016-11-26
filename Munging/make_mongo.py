@@ -1,5 +1,7 @@
-import pymongo
+import pandas as pd
 import pickle
+import pymongo
+
 
 def get_pickle(filepath):
     #Get data from pickled file
@@ -22,6 +24,10 @@ def get_the_good_stuff(db):
     print full_info_beers.count()
     return full_info_beers
 
+def to_pandas_we_go(cursor):
+    df = pd.DataFrame(list(cursor))
+    return df
+
 if __name__ == "__main__":
 
     client = pymongo.MongoClient()
@@ -32,3 +38,5 @@ if __name__ == "__main__":
 
     db = make_db(data)
     full_info_beers = get_the_good_stuff(db)
+    df = to_pandas_we_go(full_info_beers)
+    
