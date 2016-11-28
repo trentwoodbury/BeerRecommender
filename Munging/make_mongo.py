@@ -12,12 +12,15 @@ def make_db(data):
     #Create MongoDB database called BeerDB
     #Populate database with our dictionaries from data variable
     db = client['beerDB']
+    db.beer.delete_many({})
     for doc in data:
         db.beer.insert_one(doc)
     print "Original Number of Beers:", db.beer.find().count()
     return db
 
 def get_the_good_stuff(db):
+    #INPUT: full database of beers
+    #Beers that have abv, description, ibu, name, and fgMax
     query1 = {'abv': {'$exists': 1}, 'description': {'$exists': 1}, 'ibu': {'$exists': 1}, 'name' : {'$exists': 1}, 'fgMax': {'$exists': 1}}
     query2 = {'abv':1, 'description': 1, 'ibu': 1, 'name': 1, 'fgMax': 1}
     full_info_beers = db.beer.find(query1, query2)
