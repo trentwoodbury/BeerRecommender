@@ -29,7 +29,7 @@ def get_the_data():
                     new_str = ''
                     for item in everything:
                         new_str += str(item) + ': '
-                    new_str = new_str.replace('/', '').replace('""', '')
+                    new_str = new_str.replace('/', '').replace('\\', '').replace('""', '')
 
                     #new_str will end with ':' so let's remove that
                     #and then let's add new_str to the dict_list
@@ -50,17 +50,20 @@ def break_apart(dict_list):
         for idx, d in enumerate(split_dicts):
             #first value in split_dicts will start with '{'
             if idx == 0:
-                current_string = str(d).replace('"', '\'') + '}}'
+                current_string = str(d) + '}}'
             #case where we're in the middle
             elif 0 < idx and idx < len(split_dicts)-1:
-                current_string = '{' + str(d).replace('"', '\'') + '}}'
+                current_string = '{' + str(d) + '}}'
             #case where we're at the last value in split_dicts
             else:
-                current_string = '{' + str(d).replace('"', '\'')
-            temp_list.append(yaml.load(current_string))
+                current_string = '{' + str(d)
+            temp_list.append(current_string)
 
         lolod.append(temp_list)
     return lolod
+
+def try_to_dict_it(lolod):
+    pass
 
 
 
@@ -70,5 +73,5 @@ def break_apart(dict_list):
 if __name__ == "__main__":
 
     dict_list = get_the_data()
-    broken_apart = break_apart(dict_list)
+    lolod = break_apart(dict_list)
     # dict_list.append(yaml.load(new_str))
