@@ -9,7 +9,7 @@ def get_pickle(filepath):
     subsetted_data = []
     for d in data:
         try:
-            d_subset = {'name' : d['name'], 'description': d['style']['description'],
+            d_subset = {'name' : d['name'], 'style': d['style']['shortName'],
             'abv': d['abv'], 'ibu': d['ibu'], 'finalGravity': d['style']['fgMax']}
             subsetted_data.append(d_subset)
         except:
@@ -17,7 +17,7 @@ def get_pickle(filepath):
     return subsetted_data
 
 def to_pandas_we_go(data):
-    df = pd.DataFrame(data).loc[: , ['name', 'description', 'abv', 'finalGravity', 'ibu']]
+    df = pd.DataFrame(data).loc[: , ['name', 'style', 'abv', 'finalGravity', 'ibu']]
     print "Sample of Beer DataFrame \n", df.head(), '\n\n'
     return df
 
