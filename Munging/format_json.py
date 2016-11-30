@@ -1,8 +1,11 @@
 #The purpose of this program is to convert the disparate
-#.json files into a single dataframe
+#.json files into a list of dictionaries and then save these to
+#a pickle file, beer_data.pkl.
 
-import yaml
 import os
+import pickle
+import yaml
+
 
 def get_the_data():
     #INPUT: None
@@ -67,10 +70,11 @@ def try_to_dict_it(lolod):
     for lol in lolod:
         for d in lol:
             try:
-                 bd = yaml.load(new_str)
+                bd = yaml.load(d)
+                beer_dicts.append(bd)
             except:
-                continue
-            beer_dicts.append(bd)
+                pass
+
     return beer_dicts
 
 
@@ -81,5 +85,6 @@ if __name__ == "__main__":
 
     dict_list = get_the_data()
     lolod = break_apart(dict_list)
-    beer_dicts = tr_to_dict_it(lolod)
-    # dict_list.append(yaml.load(new_str))
+    beer_dicts = try_to_dict_it(lolod)
+    #Save data to pickle file.
+    pickle.dump(beer_dicts, open('../Data/beer_data.pkl', 'w'))
