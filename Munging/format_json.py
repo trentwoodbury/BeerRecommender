@@ -63,8 +63,15 @@ def break_apart(dict_list):
     return lolod
 
 def try_to_dict_it(lolod):
-    pass
-
+    beer_dicts = []
+    for lol in lolod:
+        for d in lol:
+            try:
+                 bd = yaml.load(new_str)
+            except:
+                continue
+            beer_dicts.append(bd)
+    return beer_dicts
 
 
 
@@ -74,4 +81,5 @@ if __name__ == "__main__":
 
     dict_list = get_the_data()
     lolod = break_apart(dict_list)
+    beer_dicts = tr_to_dict_it(lolod)
     # dict_list.append(yaml.load(new_str))
