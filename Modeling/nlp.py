@@ -1,3 +1,6 @@
+#This file will not work unless you include the description column in the to_pandas_we_go.py file located in the Munging folder.
+#The reason this file is no longer in use is that the clusters resulting from NMF did not add value to the classification of the beers.
+
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 import pickle
@@ -24,12 +27,12 @@ def nmf_descriptions(df):
     corpus = [wl.lemmatize(word) for description in descs for word in description.split()]
 
     sw = stopwords.words('english')
-    sw.extend(['hoppy', 'beer', 'like', 'typically', 'ale', 'character', 'estery', 'emphasized', 'medium', 'low', 'high', 'fuller', 'evident', 'flavor', 'alcohol', 'evident', 'perceived', 'style', 'variety', 'aroma', 'levels', 'body', 'color', 'employ', 'employed', 'derived', 'enhances', 'end', 'emphasis', 'element', 'either', 'duration', 'may', 'light', 'bodied', 'toasted', 'use', 'non', 'emerge', 'enjoyed', 'enhance', 'enhanced', 'content', 'cold', 'generated', 'absent', 'temperatures', 'temperature', 'chill'])
+    sw.extend(['hoppy', 'beer', 'like', 'typically', 'ale', 'character', 'estery', 'emphasized', 'medium', 'low', 'high', 'fuller', 'evident', 'flavor', 'alcohol', 'evident', 'perceived', 'style', 'variety', 'aroma', 'levels', 'body', 'color', 'employ', 'employed', 'derived', 'enhances', 'end', 'emphasis', 'element', 'either', 'duration', 'may', 'light', 'bodied', 'toasted', 'use', 'non', 'emerge', 'enjoyed', 'enhance', 'enhanced', 'content', 'cold', 'generated', 'absent', 'temperatures', 'temperature', 'chill', 'essentially', 'especially', 'level', 'type', 'used', 'entered', 'entry', 'enough', 'acceptable'])
     tfidf = TfidfVectorizer(max_df = .9, stop_words = sw)
     tfidf_fit = tfidf.fit_transform(corpus)
     feature_names = tfidf.get_feature_names()
 
-    nmf = NMF(n_components = 5, l1_ratio = 0.5).fit(tfidf_fit)
+    nmf = NMF(n_components = 2, l1_ratio = 0.5).fit(tfidf_fit)
 
     return nmf, feature_names
 
@@ -37,4 +40,4 @@ def nmf_descriptions(df):
 if __name__ == "__main__":
     df = get_dataframe('../Data/beer_data_final.pkl')
     nmf, feature_names = nmf_descriptions(df)
-    print_top_words(nmf, feature_names, 10 )
+    print_top_words(nmf, feature_names, 5 )
