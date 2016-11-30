@@ -18,26 +18,36 @@ def get_beer_url(url_req):
 def get_beer():
     #input: start page of query, how many pages to query
     #output: json of beers
-    abv_pages = {4: 16, 5: 67, 6: 54, 7: 39, 8: 30, 9: 22, 10: 19}
+    # abv_pages = {4: 16, 5: 67, 6: 54, 7: 39, 8: 30, 9: 22, 10: 19}
+    abv_pages = {4:2, 5:3}
     beers = []
     for abv in abv_pages:
         for page_num in range(abv_pages[abv]):
-            query = Request('http://api.brewerydb.com/v2/beers?key={}&abv={}&p={}'.format(api_key, 5, 10))
+            query = Request('http://api.brewerydb.com/v2/beers?key={}&abv={}&p={}'.format(api_key, abv, page_num))
             f = urlopen(query)
             beers.append(f.read())
+    for beer in beers:
+        filepath = '../Data/abv_'+str(key)+'_page_'+str(page_num) + '.json'
+        with open(filepath, 'w') as output:
+            output.write("{}".format(beer))
     return beers
 
 
-def store_beer(outfile):
-    #input: outfile, filepath to where resultant json will be stored
-    #output: saves json file.
-    with open(outfile, 'w') as outfile:
-        for beer_dict in beer_list:
-            json.dump(beer_dict, outfile)
+# def store_beer(outfile):
+#     #input: outfile, filepath to where resultant json will be stored
+#     #output: saves json file.
+#     # abv_pages = {4: 16, 5: 67, 6: 54, 7: 39, 8: 30, 9: 22, 10: 19}
+#     abv_pages = {4:2, 5:3}
+#     for key in abv_pages.keys():
+#         for page_num in range(abv_pages[key]):
+#             filename = str(outfile)+'abv_'+str(key)+'_page_'+str(page_num) + '.json'
+#             with open(filename, 'w') as outfile:
+#                 for beer_dict in beer_list:
+#                     json.dump(beer_dict, outfile)
 
 if __name__ == "__main__":
     BreweryDb.configure(api_key)
 
     beer_list = get_beer()
 
-    store_beer('../Data/beerdb.json')
+    # store_beer('../Data/')
