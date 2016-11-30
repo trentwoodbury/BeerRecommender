@@ -24,12 +24,12 @@ def nmf_descriptions(df):
     corpus = [wl.lemmatize(word) for description in descs for word in description.split()]
 
     sw = stopwords.words('english')
-    sw.extend(['hoppy', 'beer', 'like', 'typically', 'ale', 'character', 'estery', 'emphasized', 'medium', 'low', 'high', 'fuller', 'evident', 'flavor', 'alcohol', 'evident', 'perceived', 'style', 'variety', 'aroma', 'levels', 'body', 'color'])
+    sw.extend(['hoppy', 'beer', 'like', 'typically', 'ale', 'character', 'estery', 'emphasized', 'medium', 'low', 'high', 'fuller', 'evident', 'flavor', 'alcohol', 'evident', 'perceived', 'style', 'variety', 'aroma', 'levels', 'body', 'color', 'employ', 'employed', 'derived', 'enhances', 'end', 'emphasis', 'element', 'either', 'duration', 'may', 'light', 'bodied', 'toasted', 'use', 'non', 'emerge', 'enjoyed', 'enhance', 'enhanced', 'content', 'cold', 'generated', 'absent', 'temperatures', 'temperature', 'chill'])
     tfidf = TfidfVectorizer(max_df = .9, stop_words = sw)
     tfidf_fit = tfidf.fit_transform(corpus)
     feature_names = tfidf.get_feature_names()
 
-    nmf = NMF(n_components = 10, l1_ratio = 0.5).fit(tfidf_fit)
+    nmf = NMF(n_components = 5, l1_ratio = 0.5).fit(tfidf_fit)
 
     return nmf, feature_names
 
@@ -37,4 +37,4 @@ def nmf_descriptions(df):
 if __name__ == "__main__":
     df = get_dataframe('../Data/beer_data_final.pkl')
     nmf, feature_names = nmf_descriptions(df)
-    print_top_words(nmf, feature_names, 15 )
+    print_top_words(nmf, feature_names, 10 )
