@@ -25,7 +25,7 @@ def format_df(df):
     df['abv'] = pd.to_numeric(df['abv'])
     df['finalGravity'] = pd.to_numeric(df['finalGravity'])
     df['ibu'] = pd.to_numeric(df['ibu'])
-    return df
+    return df.drop_duplicates()
 
 if __name__ == "__main__":
 
@@ -35,4 +35,4 @@ if __name__ == "__main__":
     df = format_df(to_pandas_we_go(data))
 
     # pickle.dump(data, open('../Data/beer_data_final.pkl', 'w'))
-    print "All {} pieces of data retrieved \n".format(len(data))
+    print "All {} pieces of data retrieved \n".format(df.shape[0])
