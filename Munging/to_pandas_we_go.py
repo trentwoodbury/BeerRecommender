@@ -18,7 +18,7 @@ def get_pickle(filepath):
 
 def to_pandas_we_go(data):
     df = pd.DataFrame(data).loc[: , ['name', 'description', 'abv', 'finalGravity', 'ibu']]
-    print "Sample of Beer DataFrame \n", df.head()
+    print "Sample of Beer DataFrame \n", df.head(), '\n\n'
     return df
 
 def format_df(df):
@@ -34,5 +34,5 @@ if __name__ == "__main__":
     data = get_pickle('../Data/beer_data.pkl')
     df = format_df(to_pandas_we_go(data))
 
-    # pickle.dump(data, open('../Data/beer_data_final.pkl', 'w'))
+    pickle.dump(df, open('../Data/beer_data_final.pkl', 'w'))
     print "All {} pieces of data retrieved \n".format(df.shape[0])
