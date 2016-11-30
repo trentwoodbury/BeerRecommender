@@ -40,6 +40,7 @@ def get_the_data():
                     dict_list.append(new_str)
     return dict_list
 
+
 def break_apart(dict_list):
     #INPUT: output of get_the_data
     #OUTPUT: a list of lists of dictionaries
@@ -65,7 +66,10 @@ def break_apart(dict_list):
         lolod.append(temp_list)
     return lolod
 
+
 def try_to_dict_it(lolod):
+    #INPUT: list of lists of strings of dictionaries
+    #OUTPUT: list of lists of dictionaries
     beer_dicts = []
     for lol in lolod:
         for d in lol:
@@ -78,6 +82,25 @@ def try_to_dict_it(lolod):
     return beer_dicts
 
 
+def fix_bad_keys(beer_dicts):
+    #INPUT: output of try_to_dict_it
+    #OUTPUT: list of lists of dictionaries where the key values don't contain '.' and all key values are strings. This is required for MongoDB.
+    fixed = []
+    for bd in beer_dicts:
+        for key in bd.keys():
+            if "." in str(key):
+                data = bd[key]
+                good_key = str(key).replace('.', '')
+                del bd[key]
+                bd[good_key] = data
+            elif type(key) != str:
+                good_key = str(key)
+                data = bd[key]
+                del bd[key]
+                bd[good_key] = data
+        fixed.append(bd)
+    return fixed
+
 
 
 
@@ -85,6 +108,6 @@ if __name__ == "__main__":
 
     dict_list = get_the_data()
     lolod = break_apart(dict_list)
-    beer_dicts = try_to_dict_it(lolod)
+    beer_dicts = fix_bad_keys(try_to_dict_it(lolod))
     #Save data to pickle file.
     pickle.dump(beer_dicts, open('../Data/beer_data.pkl', 'w'))
