@@ -5,23 +5,34 @@ import yaml
 import os
 
 def get_the_data():
+    #INPUT: None
+    #OUTPUT: a list of all the data dictionaries as strings. These strings
+    #need to be formatted before they can be converted to dictionaries. They
+    #have all kinds of weird problems.
+
     dict_list = []
-    counter = 0
     for filename in os.listdir('../Data'):
         if filename != '.DS_Store':
             with open('../Data/'+ str(filename)) as f:
                 for everything in f:
-                    count = 0
+
+                    #Remove the success message at the beginning
+                    #we only want the embedded dictionary with the information
                     everything = everything.split(':')[4:-1]
-                    #Remove brackets before and after dictionary
+                    #Remove brackets before dictionary
                     everything[0] = everything[0][1:]
+                    #Remove success message at end.
+                    #We only want the embedded dictionary with the information
                     everything[-1] = everything[-1][:-10]
+
+                    #Now we are going to put our results into a string
                     new_str = ''
-                    layers_deep = 0
                     for item in everything:
                         new_str += str(item) + ': '
                     new_str = new_str.replace('/', '').replace('\\', '').replace('""', '')
+
                     #new_str will end with ':' so let's remove that
+                    #and then let's add new_str to the dict_list
                     new_str = new_str[:-2]
                     dict_list.append(new_str)
     return dict_list
