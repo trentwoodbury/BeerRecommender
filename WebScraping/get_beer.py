@@ -25,11 +25,11 @@ def get_beer():
         for page_num in range(abv_pages[abv]):
             query = Request('http://api.brewerydb.com/v2/beers?key={}&abv={}&p={}'.format(api_key, abv, page_num))
             f = urlopen(query)
+            beer = f.read()
             beers.append(f.read())
-    for beer in beers:
-        filepath = '../Data/abv_'+str(key)+'_page_'+str(page_num) + '.json'
-        with open(filepath, 'w') as output:
-            output.write("{}".format(beer))
+            filepath = '../Data/abv_'+str(abv)+'_page_'+str(page_num) + '.json'
+            with open(filepath, 'w') as output:
+                output.write("{}".format(beer))
     return beers
 
 
