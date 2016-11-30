@@ -32,18 +32,6 @@ def get_beer():
     return beers
 
 
-# def store_beer(outfile):
-#     #input: outfile, filepath to where resultant json will be stored
-#     #output: saves json file.
-#     # abv_pages = {4: 16, 5: 67, 6: 54, 7: 39, 8: 30, 9: 22, 10: 19}
-#     abv_pages = {4:2, 5:3}
-#     for key in abv_pages.keys():
-#         for page_num in range(abv_pages[key]):
-#             filename = str(outfile)+'abv_'+str(key)+'_page_'+str(page_num) + '.json'
-#             with open(filename, 'w') as outfile:
-#                 for beer_dict in beer_list:
-#                     json.dump(beer_dict, outfile)
-
 if __name__ == "__main__":
     BreweryDb.configure(api_key)
 
