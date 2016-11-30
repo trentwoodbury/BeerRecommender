@@ -18,8 +18,7 @@ def get_beer_url(url_req):
 def get_beer():
     #input: start page of query, how many pages to query
     #output: json of beers
-    # abv_pages = {4: 16, 5: 67, 6: 54, 7: 39, 8: 30, 9: 22, 10: 19}
-    abv_pages = {4:2, 5:3}
+    abv_pages = {4: 16, 5: 67, 6: 54, 7: 39, 8: 30, 9: 22, 10: 19}
     beers = []
     for abv in abv_pages:
         for page_num in range(abv_pages[abv]):
@@ -49,5 +48,3 @@ if __name__ == "__main__":
     BreweryDb.configure(api_key)
 
     beer_list = get_beer()
-
-    # store_beer('../Data/')
