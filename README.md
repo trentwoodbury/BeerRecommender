@@ -2,7 +2,7 @@
 A Recommendation System for Craft Beers
 
 # Status
-This project is currently in progress. Currently need to fix bugs in Munging/make_mongo.py to get mongo parsing to work.
+This project is currently in progress. Currently need to build clustering model. Step 1: feature engineering.
 
 ## Coded Using<br>
 Python<br>
