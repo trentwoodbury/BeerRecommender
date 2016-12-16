@@ -12,8 +12,8 @@ def connect_db():
     return sqlite3.connect(app.config['DATABASE'])
 
 @app.route('/')
-    def main():
-        return render_template('homepage.html')
+def main():
+    return render_template('bootstrap/index.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
