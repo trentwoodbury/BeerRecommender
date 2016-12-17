@@ -83,10 +83,16 @@ def insert_page_json(query_url):
     # Insert into MongoDB
     beer_co.insert_one(json.loads(beer_str))
 
-    tpn = "Thread {0} ABV {1} PAGE {2}"
-    thread_process_name = tpn.format(threading.get_ident(), abv_page,
-                                     page_num)
-    print thread_process_name + " ... Done"
+    pn = "Entry: ABV {0} PAGE {1}"
+    process_name = pn.format(abv_page, page_num)
+    print process_name + " ... Done"
+
+#    XXX: Doesn't seem to (fully) work yet -- Gives Thread Exception:
+#    XXX: 'module' object has no attribute 'get_ident'
+#    tpn = "Thread {0} ABV {1} PAGE {2}"
+#    thread_process_name = tpn.format(threading.get_ident(), abv_page,
+#                                     page_num)
+#    print thread_process_name + " ... Done"
 
 
 def insert_pages_json_threaded(query_url, pages):
@@ -95,6 +101,13 @@ def insert_pages_json_threaded(query_url, pages):
         INPUT: str, number
         OUTPUT: None
     '''
+#    # How to limit the threads to threads of two:
+#    evn_pages = [i for i in range(pages) if i % 2 == 0]
+#    odd_pages = [i+1 for i in range(pages) if i % 2 == 1]
+#
+#    # Control number of threads created:
+#    for (start, end) in zip(evn_pages, odd_pages):
+
     threads = []
 
     # Add one thread per page:
@@ -110,18 +123,13 @@ def insert_pages_json_threaded(query_url, pages):
         th.join()
 
 
-def get_beer():
+def get_beer(abv_pages):
     ''' Retrieves craft beers stored in brewerydb API and pushes the results
         into a MongoDB database 'beer_db', collection 'craft_beers'.
         Adds one 'abv' threaded process per processor.
-        INPUT: pymongo Collection
-        OUTPUT: list
+        INPUT: Pages dictionary
+        OUTPUT: None
     '''
-    #input: start page of query, how many pages to query
-    #output: json of beers
-
-    abv_pages = {4: 16, 5: 67, 6: 54, 7: 39, 8: 30, 9: 22, 10: 19}
-    #abv_pages = {4: 16}
     query_url = 'http://api.brewerydb.com/v2/beers?key={}&abv={}&p={}'
 
     pool = mp.Pool(processes=mp.cpu_count())
@@ -140,4 +148,11 @@ def get_beer():
 
 if __name__ == "__main__":
     BreweryDb.configure(api_key)
-    get_beer()
+
+    # Chosen data to pull:
+    abv_pages = {4: 16, 5: 67, 6: 54, 7: 39, 8: 30, 9: 22, 10: 19}
+    #abv_pages = {4: 16}
+
+    get_beer(abv_pages)
+
+
