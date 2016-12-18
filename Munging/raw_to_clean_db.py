@@ -50,10 +50,10 @@ if __name__ == '__main__':
     beer_co_raw = db['craft_beers_raw']
     beer_co_clean = db['craft_beers']
 
-    ###########
-    # Process
+    ########################
+    # Process / Write to DB
 
-    # DYLAN: I got 244 pages -> 12200 beers
+    # DYLAN: I got 244 pages -> 12200 beers  (though I think it should be 247?)
     # Each document will be one beer:
     for entry in beer_co_raw.find():
         for e in entry['data']:
