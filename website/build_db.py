@@ -24,4 +24,4 @@ def build_database(data_base_name, beer_data):
 
 if __name__ == "__main__":
     beer_data = pickle.load(open('../Data/beer_data_final.pkl', "r"))
-    build_database("beer_db", beer_data)
+    build_database("beer_db.db", beer_data)
