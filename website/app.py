@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, session, flash, redirect, url_for, g
+from flask_bootstrap import Bootstrap
 import sqlite3
 
 DATABASE = 'beer_db'
@@ -13,7 +14,8 @@ def connect_db():
 
 @app.route('/')
 def main():
-    return render_template('bootstrap/index.html')
+    return render_template('index.html')
 
 if __name__ == '__main__':
+    Bootstrap(app)
     app.run(debug=True)
