@@ -54,6 +54,9 @@ if __name__ == '__main__':
 
     knn = gl.nearest_neighbors.create(sf, label='id')
 
+    ###########
+    # Testing
+
     print "TESTING..."
 
     # Fake/test/new data points:
@@ -67,6 +70,22 @@ if __name__ == '__main__':
         print "Test Passed! Model is working."
     else:
         print "Test Failed!"
+
+    s_idx = np.random.randint(len(sf))
+    query_pt = sf[s_idx:s_idx+1]
+    print '=' * 40
+    print "FINDING 5 MATCHES FOR: " + query_pt[0]['name'] + " ("\
+                                    + query_pt[0]['style_name'] + ")"
+    print '=' * 40
+
+    ans = knn.query(query_pt, label='id', k=6)
+
+    labels = ans['reference_label'][1:]
+
+    for i, l in enumerate(labels):
+        entry = sf[sf['id'] == l][0]
+        print str(i) + ": " + entry['name'] + " (" + entry['style_name'] + ")"
+
 
 ##############
 # End of File
