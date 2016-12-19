@@ -97,6 +97,8 @@ if __name__ == '__main__':
         # And convert 'float' columns:
         df[col] = pd.to_numeric(df[col], errors='ignore')
 
+    df.drop_duplicates(inplace=True)
+
     ########
     # Save
 
