@@ -7,6 +7,7 @@ import os
 import cPickle as pickle
 
 import pandas as pd
+import numpy as np
 import graphlab as gl
 
 
