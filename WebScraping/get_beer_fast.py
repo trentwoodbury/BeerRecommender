@@ -36,9 +36,16 @@ from api_key import api_key
 
 DB_NAME = 'beer_db'
 COLLECTION_NAME = 'craft_beers_raw'
+MONGO_USERNAME = os.environ['MONGO_USERNAME']
+MONGO_PASSWORD = os.environ['MONGO_PASSWORD']
+MONGO_HOSTNAME = os.environ['MONGO_HOSTNAME']
 
 try:
-    dbconn = MongoClient(serverSelectionTimeoutMS=10)
+    address = 'mongodb://'
+    address += MONGO_USERNAME + ':'
+    address += MONGO_PASSWORD + '@'
+    address += MONGO_HOSTNAME
+    dbconn = MongoClient(address, serverSelectionTimeoutMS=10)
     dbconn.server_info()
 
 except ServerSelectionTimeoutError as e:
