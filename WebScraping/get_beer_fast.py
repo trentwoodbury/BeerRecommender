@@ -79,6 +79,7 @@ def insert_page_json(query_url):
         INPUT: str
         OUTPUT: None
     '''
+    # TODO: 'try' statement so this doesn't fail on 'too many HTTP requests'
     query = Request(query_url)
     f = urlopen(query)
     beer_str = f.read()
