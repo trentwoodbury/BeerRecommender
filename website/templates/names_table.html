@@ -1,0 +1,14 @@
+{% extends "index.html" %}
+{%block content %}
+<table style = "width: 100%">
+    {% for beers in result %}
+    <tr>
+      <td>{{ beers[0] }}</td>
+      <td>{{ beers[1] }}</td>
+      <td>{{ beers[2] }}</td>
+      <td>{{ beers[3] }}</td>
+      <td>{{ beers[4] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
