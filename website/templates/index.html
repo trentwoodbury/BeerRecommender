@@ -1,3 +1,4 @@
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -92,27 +93,17 @@
                     <hr class="star-primary">
                 </div>
             </div>
-            <style>
-            input[type=text] {
-                width: 130px;
-                box-sizing: border-box;
-                border: 2px solid #ccc;
-                border-radius: 4px;
-                font-size: 16px;
-                background-color: white;
-                background-image: url('searchicon.png');
-                background-position: 10px 10px;
-                background-repeat: no-repeat;
-                padding: 12px 20px 12px 40px;
-                -webkit-transition: width 0.4s ease-in-out;
-                transition: width 0.4s ease-in-out;
-            }
-
-            input[type=text]:focus {
-                width: 100%;
-            }
-            </style>
-            <input type="text" name="search" placeholder="Search A Beer..">
+            <table style = "width: 100%">
+                {% for beers in beers_split %}
+                <tr>
+                  <td>{{ beers[0] }}</td>
+                  <td>{{ beers[1] }}</td>
+                  <td>{{ beers[2] }}</td>
+                  <td>{{ beers[3] }}</td>
+                  <td>{{ beers[4] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
         </div>
     </section>
 
