@@ -88,6 +88,20 @@ if __name__ == '__main__':
         print str(i) + ": " + entry['name'] + " (" + entry['style_name'] + ")"
 
 
+    #####################################
+    # Save Model and Feature selection:
+
+    feature_file = os.path.join(os.pardir, 'Data', 'features_list.pkl')
+    model_file = os.path.join(os.pardir, 'Data', 'graphlab_model.pkl')
+
+    with open(feature_file, 'wb') as f:
+        pickle.dump(dfs.columns.tolist(), f)
+
+#    # only if we can actually pickle the object!
+#    with open(model_file, 'wb') as f:
+#        pickle.dump({'model': knn}, f)
+
+
 ##############
 # End of File
 ##############

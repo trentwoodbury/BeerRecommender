@@ -12,6 +12,7 @@
 
 '''
 import sys
+import os
 
 from pymongo import MongoClient
 from pymongo.errors import ServerSelectionTimeoutError
@@ -21,10 +22,17 @@ if __name__ == '__main__':
 
     ########
     # Load
+    MONGO_USERNAME = os.environ['MONGO_USERNAME']
+    MONGO_PASSWORD = os.environ['MONGO_PASSWORD']
+    MONGO_HOSTNAME = os.environ['MONGO_HOSTNAME']
 
     # Check server:
     try:
-        cli = MongoClient(serverSelectionTimeoutMS=10)
+        address = 'mongodb://'
+        address += MONGO_USERNAME + ':'
+        address += MONGO_PASSWORD + '@'
+        address += MONGO_HOSTNAME
+        cli = MongoClient(address, serverSelectionTimeoutMS=100)
         cli.server_info()
 
     except ServerSelectionTimeoutError as e:
