@@ -15,6 +15,7 @@ Finally run website/app.py. This will start a local version of the website. Open
 
 ## Coded Using<br>
 AWS<br>
+BreweryDB API<br>
 CSS<br>
 Flask<br>
 HTML <br>
@@ -23,6 +24,3 @@ Pandas<br>
 Python<br>
 SKlearn<br>
 SQLite<br>
-
-
-The BreweryDB API
