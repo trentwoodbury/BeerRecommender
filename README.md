@@ -24,7 +24,7 @@ SQLite<br>
 
 # Status
 This project is currently in progress. We are currently deploying and editing the website at beerecommender.com.
-<br><b>To Do</b>
+<br><b>To Do List:</b>
 <ul>
     <li>Fix KNN algorithm to not include input item (Trent)</li>
     <li>Fix Start Formatting in index.html (Trent)</li>
