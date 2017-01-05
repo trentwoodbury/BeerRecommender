@@ -26,8 +26,6 @@ SQLite<br>
 This project is currently in progress. We are currently deploying and editing the website at beerecommender.com.
 <br><b>To Do List:</b>
 <ul>
-    <li>Fix KNN algorithm to not include input item (Trent)</li>
-    <li>Fix Start Formatting in index.html (Trent)</li>
     <li>Create Dropdown menu of beer styles (Trent)</li>
     <li>Add AWS hosting on Elastic Beanstalk (Dylan)</li>
     <li>Add link back to home page for ABV search</li>
