@@ -51,9 +51,9 @@ if __name__ == '__main__':
     # Save
 
     savefile = os.path.join(os.pardir, 'Data', 'beer_data_full.pkl')
-    save_web = os.path.join(os.pardir, 'website', 'beet_data_full.pkl')
+    save_web = os.path.join(os.pardir, 'website', 'beer_data_full.pkl')
 
     with open(savefile, 'wb') as f:
         pickle.dump(df, f, protocol=pickle.HIGHEST_PROTOCOL)
-    with open(savefile, 'wb') as f:
+    with open(save_web, 'wb') as f:
         pickle.dump(df, f, protocol=pickle.HIGHEST_PROTOCOL)
