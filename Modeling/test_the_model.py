@@ -19,25 +19,9 @@ import graphlab as gl
 from utils import connect_mongo
 from utils import flatten
 from utils import convert_columns
-
-
-def get_dfs():
-    data_file = os.path.join(os.pardir, 'Data', 'beer_data_full.pkl')
-
-    with open(data_file, 'rb') as f:
-        df = pickle.load(f)
-
-    dfs = df.copy()
-
-    # Feature selection
-    for col in dfs:
-        if pd.isnull(dfs[col]).sum() > 5000:
-            del dfs[col]
-
-    # Simplest possible -- Drop NaN rows ((6928, 30)):
-    dfs.dropna(axis=0, inplace=True)
-
-    return dfs
+from utils import get_dfs
+from utils import feature_select
+from utils import COLUMNS
 
 
 if __name__ == '__main__':
@@ -48,9 +32,11 @@ if __name__ == '__main__':
 
     # training data:
     dfs_train = get_dfs()
+    dfs_train = feature_select(dfs_train)
 
     #########################
     # Load mongo data point
+    # -- in the future this would be a post request.
 
     one = beer_co_clean.find_one()
     df = pd.DataFrame([flatten(one)])
@@ -58,11 +44,7 @@ if __name__ == '__main__':
     del df['_id']
     df = convert_columns(df)
 
-    feature_file = os.path.join(os.pardir, 'Data', 'features_list.pkl')
-    with open(feature_file, 'rb') as f:
-        columns = pickle.load(f)
-
-    dfs_point = df[columns]
+    dfs_point = df[COLUMNS].copy()
 
     # ensure the same types:
     for col in dfs_point:
@@ -87,3 +69,7 @@ if __name__ == '__main__':
     for i, l in enumerate(labels):
         entry = sf[sf['id'] == l][0]
         print str(i) + ": " + entry['name'] + " (" + entry['style_name'] + ")"
+        
+###############
+# End of File
+###############

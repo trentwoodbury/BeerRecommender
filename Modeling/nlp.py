@@ -21,6 +21,13 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.decomposition import NMF
 
 
+# Load these once globally
+PARSER = English()
+STOP_WORDS = set(stopwords.words('english') + list(ENGLISH_STOP_WORDS))
+PUNCT_TBL = dict.fromkeys(i for i in xrange(sys.maxunicode)
+                        if unicodedata.category(unichr(i)).startswith('P'))
+
+
 def get_dataframe(filepath):
     #Load data
     data = pickle.load(open(filepath))
@@ -34,6 +41,11 @@ def print_top_words(model_components, feature_names, n_top_words=5):
         print '\n'
 
 def tokenizer(doc):
+    ''' SpaCy custom tokenizer.
+        INPUT: string (one document)
+        OUTPUT: list (of tokens)
+    '''
+
     # Replace '-' with ' ', and remove all other punctuation:
     doc = doc.translate({45: u' '})
     doc = doc.translate(PUNCT_TBL)
@@ -49,8 +61,10 @@ def tokenizer(doc):
 
 
 def nmf_descriptions(df):
-    #INPUT: dataframe of beer info
-    #OUTPUT: NMF of beer descriptions
+    ''' NMF topic modeling code.
+        INPUT: pd.DataFrame (beer info)
+        OUTPUT: np.array (matrix of latent features), list (of tokens)
+    '''
     descs = df['full_description']
 #    wl = WordNetLemmatizer()
 #
@@ -85,10 +99,6 @@ def nmf_descriptions(df):
 
 
 if __name__ == "__main__":
-    PARSER = English()
-    STOP_WORDS = set(stopwords.words('english') + list(ENGLISH_STOP_WORDS))
-    PUNCT_TBL = dict.fromkeys(i for i in xrange(sys.maxunicode)
-                            if unicodedata.category(unichr(i)).startswith('P'))
 
 #    df = get_dataframe('../Data/beer_data_final.pkl')
     df = get_dataframe('../Data/beer_data_full.pkl')
@@ -104,11 +114,5 @@ if __name__ == "__main__":
     model_components, feature_names = nmf_descriptions(df)
 
     print_top_words(model_components, feature_names, n_top_words=8)
-
-#    print '=' * 40
-#    print 'Actual Beer Names'
-#    print '=' * 40
-#    for n in df['style_shortName'].unique():
-#        print n
 
 
