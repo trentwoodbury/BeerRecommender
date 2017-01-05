@@ -8,6 +8,7 @@
 '''
 
 import os
+import cPickle as pickle
 from collections import MutableMapping
 
 import pandas as pd
@@ -15,6 +16,15 @@ import numpy as np
 from unidecode import unidecode
 from pymongo import MongoClient
 from pymongo.errors import ServerSelectionTimeoutError
+from sklearn.preprocessing import StandardScaler
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+# Custom column selection:
+COLUMNS = ['abv', 'description', 'isOrganic', 'name', 'nameDisplay',\
+           'style_abvMax', 'style_abvMin', 'style_category_name', \
+           'style_description', 'style_fgMax', 'style_fgMin', \
+           'style_ibuMax', 'style_ibuMin', 'style_name', 'style_ogMin',
+           'style_shortName', 'style_srmMax', 'style_srmMin', 'id']
 
 
 def display_non_nan(df):
@@ -36,13 +46,20 @@ def display_non_nan(df):
         print st.format(col, col_type, val_type, val)
 
 
-def connect_mongo():
-    ########
-    # Load
+def connect_mongo(offline=False):
+    ''' Script to connect to the 'beer_db' MongoDB database, as set up in the
+        environment variables.
+        INPUT: bool
+        OUTPUT: Mongo Collection -- 'craft_beers'
+    '''
 
     MONGO_USERNAME = os.environ['MONGO_USERNAME']
     MONGO_PASSWORD = os.environ['MONGO_PASSWORD']
-    MONGO_HOSTNAME = os.environ['MONGO_HOSTNAME']
+
+    if offline:
+        MONGO_HOSTNAME = 'localhost'
+    else:
+        MONGO_HOSTNAME = os.environ['MONGO_HOSTNAME']
 
     # Check server:
     try:
@@ -98,8 +115,11 @@ def flatten(d, parent_key='', sep='_'):
     return dict(items)
 
 def convert_columns(df):
-    # Take care of columns like: NaN(float) ... RwZ9MZ(unicode) ...
-    # Store as graphlab compatible: None(NoneType) ... 'RwZ9MZ'(string) ... 
+    ''' Take care of columns like: NaN(float) ... RwZ9MZ(unicode) ...
+        Store as graphlab compatible: None(NoneType) ... 'RwZ9MZ'(string) ... 
+        INPUT: pd.DataFrame
+        OUTPUT: pd.DataFrame
+    '''
     for col in df:
         if df[col].dtype == np.object:
             df[col] = df[col].apply(lambda x: None if type(x) == float \
@@ -109,3 +129,89 @@ def convert_columns(df):
         df[col] = pd.to_numeric(df[col], errors='ignore')
 
     return df
+
+
+def get_dfs():
+    data_file = os.path.join(os.pardir, 'Data', 'beer_data_full.pkl')
+
+    with open(data_file, 'rb') as f:
+        df = pickle.load(f)
+
+    dfs = df.copy()
+
+    return dfs
+
+def get_dfs_train():
+    data_file = os.path.join(os.pardir, 'Data', 'beer_data_train.pkl')
+
+    with open(data_file, 'rb') as f:
+        df = pickle.load(f)
+
+    dfs_train = df.copy()
+
+    return dfs_train
+
+
+def feature_select(dfs):
+    global COLUMNS
+
+    # Feature selection
+    for col in dfs:
+        if pd.isnull(dfs[col]).sum() > 5000:
+            del dfs[col]
+
+    # Simplest possible -- Drop NaN rows ((6928, 30)):
+    dfs.dropna(axis=0, inplace=True)
+
+    dfs['isOrganic'] = dfs['isOrganic'].apply(lambda x: True if x == 'Y'
+                                                             else False)
+
+    dfs = dfs[COLUMNS].copy()
+
+    return dfs
+
+
+def normalize(dfs, normalizer=None):
+
+    columns = dfs.columns.tolist()
+    index = dfs.index
+
+    if normalizer:
+        ss = normalizer
+        norm_data = ss.transform(dfs)
+    else:
+        ss = StandardScaler()
+        norm_data = ss.fit_transform(dfs)
+
+    dfs_norm = pd.DataFrame(norm_data, index=index, columns=columns)
+
+    return dfs_norm, ss
+
+def vectorize(dfs, vectorizer=None):
+
+    dfs['text'] = ""
+
+    # Add all string columns together:
+    for col in dfs:
+        if col == 'text':
+            continue
+
+        if dfs[col].dtype == np.object:
+            dfs['text'] += " " + dfs[col]
+            del dfs[col]
+
+    if vectorizer:
+        tfidf = vectorizer
+        vec_text = tfidf.transform(dfs['text'])
+    else:
+        tfidf = TfidfVectorizer(max_df=0.9, min_df=0.1, stop_words='english')
+        vec_text = tfidf.fit_transform(dfs['text'])
+
+    dfs_sparse = pd.DataFrame(vec_text.toarray(),
+                              columns=tfidf.get_feature_names(),
+                              index=dfs.index)
+    dfs = pd.concat([dfs, dfs_sparse], axis=1)
+    del dfs['text']
+
+    return dfs, tfidf
+
