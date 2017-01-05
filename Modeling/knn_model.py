@@ -19,31 +19,29 @@ from utils import vectorize
 
 
 # XXX: THIS FUNCTION IS CURRENTLY NOT USED. NEEDS USERS/RATINGS.
-def sim_rec(sf):
+# def sim_rec(sf):
+#
+#     # Fake/test/new data points:
+#     sfnew = sf[1:2]
+#     sfnew['style_fgMax'] = 1.5
+#     sfnew['id'] = 'p0p1'
+#
+#     sfnew2 = sf[3:4]
+#     sfnew2['style_fgMax'] = 1.5
+#     sfnew2['id'] = 'p0p2'
+#
+#     sf = sf.append(sfnew)
+#     sf = sf.append(sfnew2)
+#
+#     # Train the similarity engine:
+#     similarity_model = gl.recommender.item_similarity_recommender.create(
+#                             sf,
+#                             item_id='id')
+#
+#     # Recommendations:
+#     nn = similarity_model.get_similar_items(['p0p1', 'p0p2'])
 
-    # Fake/test/new data points:
-    sfnew = sf[1:2]
-    sfnew['style_fgMax'] = 1.5
-    sfnew['id'] = 'p00p1'
-    
-    sfnew2 = sf[3:4]
-    sfnew2['style_fgMax'] = 1.5
-    sfnew2['id'] = 'p00p2'
-
-    sf = sf.append(sfnew)
-    sf = sf.append(sfnew2)
-
-    # Train the similarity engine:
-    similarity_model = gl.recommender.item_similarity_recommender.create(
-                            sf,
-                            item_id='id')
-
-    # Recommendations:
-    nn = similarity_model.get_similar_items(['p00p1', 'p00p2'])
-
-
-if __name__ == '__main__':
-
+def get_data():
     dfs = get_dfs()
     dfs = feature_select(dfs)
     dfs_train = dfs.copy()
@@ -52,12 +50,17 @@ if __name__ == '__main__':
     dfs_train, tfidf_vec = vectorize(dfs_train)
     dfs_train, normalizer = normalize(dfs_train)
 
-    knn = NearestNeighbors(n_neighbors=5, algorithm='brute').fit(dfs_train)
-#    dfs_train = pd.concat([dfs_train, dfs.id], axis=1)
+    return dfs, dfs_train, normalizer, tfidf_vec
+
+def train_knn(dfs, dfs_train, neighbors = 6 ):
+    #INPUT: neighbors (number of neighbors, int), dfs_train (first output of get_data function)
+    #OUPUT: knn (trained model)
+
+    knn = NearestNeighbors(n_neighbors=6, algorithm='brute').fit(dfs_train)
+    #dfs_train = pd.concat([dfs_train, dfs.id], axis=1)
 
     ###########
     # Testing
-
     print "TESTING..."
 
     # Fake/test/new data points:
@@ -98,20 +101,28 @@ if __name__ == '__main__':
     for i, r in enumerate(nns.iterrows()):
         print str(i+1) + ": " + r[1]['name'] + " (" + r[1]['style_name'] + ")"
 
+    return knn
 
-    #####################################
-    # Save Model and Feature selection:
+def save_model(dfs_train, knn, normalizer, tfidf_vec):
+    #INPUT: output of get_data and train_knn functions
+    #OUTPUT: None. Saves model and data to "Data" folder
+
     data_file = os.path.join(os.pardir, 'Data', 'beer_data_train.pkl')
     model_file = os.path.join(os.pardir, 'Data', 'knn_model.pkl')
 
     with open(data_file, 'wb') as f:
         pickle.dump(dfs_train, f)
-
     # only if we can actually pickle the object!
     with open(model_file, 'wb') as f:
         pickle.dump({'knn': knn,
                      'normalizer': normalizer,
                      'vectorizer': tfidf_vec}, f)
+
+if __name__ == '__main__':
+
+    dfs, dfs_train, normalizer, tfidf_vec = get_data()
+    knn = train_knn(dfs, dfs_train)
+    save_model
 
 
 ##############
