@@ -96,7 +96,7 @@ def train_knn(dfs, dfs_train, neighbors = 6 ):
 
     dist, ind = knn.kneighbors(query_pt_pd)
 
-    nns = dfs.iloc[ind[0]]
+    nns = dfs.iloc[ind[0]][1:]
 
     for i, r in enumerate(nns.iterrows()):
         print str(i+1) + ": " + r[1]['name'] + " (" + r[1]['style_name'] + ")"
