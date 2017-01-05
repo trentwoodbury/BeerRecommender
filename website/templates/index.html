@@ -90,6 +90,13 @@
                 <div class="col-lg-12 text-center">
                     <h2>Pick a Beer</h2>
                     <hr class="star-primary">
+					<form action="{{ url_for('display_beer') }}" method="POST">
+						<input type="text" placeholder="Describe"
+							   name="description">
+						<input type="tel" placeholder="ABV"
+							   name="abv">
+						<input type="submit" name="my-form" value="Find">
+					</form>
                 </div>
             </div>
             <div class="row">
@@ -168,10 +175,18 @@
             </div>
             <div class="row">
                 <div class="col-lg-4 col-lg-offset-2">
-                    <p>Our goal is to help you find new beers to enjoy. This is an open source project. Want to contribute? Click the github link at the bottom of the page!</p>
+                    <p>Our goal is to help you find new beers to enjoy. This
+					   is an open source project. Want to contribute? Click
+					   the github link at the bottom of the page!
+					</p>
                 </div>
                 <div class="col-lg-4">
-                    <p>How does this recommend beers? It uses a K-nearest neighbors algorithm. Find out more <a href = "https://www.youtube.com/watch?v=UqYde-LULfs" style="color: blue"> here. </a></p>
+                    <p>How does this recommend beers? It uses a K-nearest
+					   neighbors algorithm. Find out more
+					   <a href = "https://www.youtube.com/watch?v=UqYde-LULfs"
+						style="color: blue"> here. 
+				       </a>
+					</p>
                 </div>
                 <div class="col-lg-8 col-lg-offset-2 text-center">
                 </div>

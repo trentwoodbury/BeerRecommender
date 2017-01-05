@@ -51,6 +51,7 @@ if __name__ == '__main__':
 
     #########################
     # Load mongo data point
+    # -- in the future this would be a post request.
 
     one = beer_co_clean.find_one()
     df = pd.DataFrame([flatten(one)])
@@ -87,3 +88,7 @@ if __name__ == '__main__':
     for i, l in enumerate(labels):
         entry = sf[sf['id'] == l][0]
         print str(i) + ": " + entry['name'] + " (" + entry['style_name'] + ")"
+        
+###############
+# End of File
+###############
