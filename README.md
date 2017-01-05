@@ -14,10 +14,15 @@ From here run Munging/raw_to_clean_db.py. This will clean up the mongo Database 
 Finally run website/app.py. This will start a local version of the website. Open up your browser and you will be able to see the website at the url: http://localhost:5000/
 
 ## Coded Using<br>
-Python<br>
+AWS<br>
+CSS<br>
+Flask<br>
+HTML <br>
 MongoDB<br>
 Pandas<br>
+Python<br>
+SKlearn<br>
 SQLite<br>
-Flask<br>
-HTML & CSS <br>
+
+
 The BreweryDB API
