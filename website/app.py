@@ -155,10 +155,18 @@ def load_training_data():
         del DFS_TRAIN['id']
 
 
-def create_model():
-    # TODO: See if we can load this from a pickle.
+def load_model():
     global KNN
-    KNN = NearestNeighbors(n_neighbors=5, algorithm='brute').fit(DFS_TRAIN)
+    global NORMALIZER
+    global VECTORIZER
+
+    model_file = os.path.join(os.pardir, 'Data', 'knn_model.pkl')
+    with open(model_file, 'rb') as f:
+        model = pickle.load(f)
+
+    KNN = model['knn']
+    NORMALIZER = model['normalizer']
+    VECTORIZER = model['vectorizer']
 
 
 def load_template_data_point():
@@ -186,22 +194,6 @@ def load_template_data_point():
             DFS_ONE[col] = ""
 
 
-def load_transformers():
-    ''' Transformers to transform the user input into a model prediction
-        ready feature matrix.
-    '''
-    global NORMALIZER
-    global VECTORIZER
-
-    normalizer_file = os.path.join(os.pardir, 'Data', 'normalizer.pkl')
-    with open(normalizer_file, 'rb') as f:
-        NORMALIZER = pickle.load(f)
-
-    vectorizer_file = os.path.join(os.pardir, 'Data', 'vectorizer.pkl')
-    with open(vectorizer_file, 'rb') as f:
-        VECTORIZER = pickle.load(f)
-
-
 @app.route('/')
 def main():
 
@@ -227,9 +219,8 @@ def main():
 if __name__ == '__main__':
     Bootstrap(app)
 
-    load_transformers()
     load_training_data()
     load_template_data_point()
-    create_model()
+    load_model()
 
     app.run(debug=True)
