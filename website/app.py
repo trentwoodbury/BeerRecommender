@@ -4,7 +4,7 @@ import pandas as pd
 import sqlite3
 
 def get_beer_names():
-    beer_df =  pd.read_pickle("../Data/beer_data_final.pkl")
+    beer_df =  pd.read_pickle("beer_data_final.pkl")
     return list(beer_df['name'])
 
 DATABASE = 'beer_db'
