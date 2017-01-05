@@ -4,7 +4,7 @@ A Recommendation System for Craft Beers
 # Status
 This project is currently in progress. We are currently deploying and editing the website at beerecommender.com.
 
-# Want to Contribute?
+# Usage Guide
 First, contact Trent or Dylan about getting the API access codes. All of the following filepaths will be relative to the parent directory for this github project. If you have cloned this project, that folder will be called BeerRecommender.
 
 Once you have the access codes, you can pull the data by running WebScraping/get_beer_fast.py. Either one will work. These files will put fill out the Mongo database with the relavent beers.
