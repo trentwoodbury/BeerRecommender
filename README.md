@@ -1,9 +1,6 @@
 # BeerRecommender
 A Recommendation System for Craft Beers
 
-# Status
-This project is currently in progress. We are currently deploying and editing the website at beerecommender.com.
-
 # Usage Guide
 First, contact Trent or Dylan about getting the API access codes. All of the following filepaths will be relative to the parent directory for this github project. If you have cloned this project, that folder will be called BeerRecommender.
 
@@ -13,7 +10,7 @@ From here run Munging/raw_to_clean_db.py. This will clean up the mongo Database 
 
 Finally run website/app.py. This will start a local version of the website. Open up your browser and you will be able to see the website at the url: http://localhost:5000/
 
-## Coded Using<br>
+# Coded Using<br>
 AWS<br>
 BreweryDB API<br>
 CSS<br>
@@ -24,3 +21,13 @@ Pandas<br>
 Python<br>
 SKlearn<br>
 SQLite<br>
+
+# Status
+This project is currently in progress. We are currently deploying and editing the website at beerecommender.com.
+<br><b>To Do</b>
+<ul>
+    <li>Fix KNN algorithm to not include input item (Trent)</li>
+    <li>Fix Start Formatting in index.html (Trent)</li>
+    <li>Create Dropdown menu of beer styles (Trent)</li>
+    <li>Add AWS hosting on Elastic Beanstalk (Dylan)</li>
+    <li>Add link back to home page for ABV search</li>
