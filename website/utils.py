@@ -228,3 +228,11 @@ def get_beer_names():
 
 def group_by_letter(names):
     alphabet = range(97, 123)
+    groups = [[] for i in range(27)]
+    for name in names:
+        letter = ord(name[0].lower())
+        if letter in range(97, 123):
+            groups[122 - letter].append(name)
+        else:
+            groups[-1].append(name)
+    return groups
