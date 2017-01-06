@@ -56,15 +56,26 @@
 </style>
 </head>
 <body>
+<h3> Browse beers by the first letter in their name. </h3>
 
+
+<!---Dropdown menus-->
+
+{% for letter in result[1] %}
 <div class="dropdown">
-<button onclick="myFunction()" class="dropbtn">Dropdown</button>
+<button onclick="myFunction()" class="dropbtn">{{ letter }}</button>
   <div id="myDropdown" class="dropdown-content">
-    <a href="#home">Home</a>
-    <a href="#about">About</a>
-    <a href="#contact">Contact</a>
+      {% for beer_name in result[0][1] %}
+      <a href="">{{ beer_name }}</a>
+      {% endfor %}
   </div>
 </div>
+{% endfor %}
+
+
+
+
+
 
 <script>
 /* When the user clicks on the button,
