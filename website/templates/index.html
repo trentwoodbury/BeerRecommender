@@ -122,11 +122,6 @@
                 <div class="col-lg-12 text-center">
                     <h2> Pick a Beer</h2>
                     <hr class="star-light">
-					<form action="{{ url_for('display_beer') }}" method="POST">
-						<input type="tel" placeholder="  Enter an ABV (3-10)"
-							   name="abv" style = "border-radius: 10px">
-						<input type="submit" name="my-form" value="Find" style = "border-radius: 10px">
-					</form>
                 </div>
             </div>
             {% block content %}
