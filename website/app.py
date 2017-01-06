@@ -9,11 +9,10 @@
           or build our own factorization recommender.
 '''
 import os
-from itertools import izip
 import cPickle as pickle
-
-import pandas as pd
-from sklearn.neighbors import NearestNeighbors
+from itertools import groupby
+from itertools import itemgetter
+from itertools import izip
 from flask import Flask
 from flask import render_template
 from flask import request
@@ -24,8 +23,8 @@ from flask import request
 #from flask import g
 from flask_bootstrap import Bootstrap
 import pandas as pd
+from sklearn.neighbors import NearestNeighbors
 import sqlite3
-
 from utils import flatten
 from utils import convert_columns
 from utils import get_dfs
@@ -64,7 +63,9 @@ app.config.from_object(__name__)
 
 def get_beer_names():
     beer_df =  pd.read_pickle("../Data/beer_data_final.pkl")
-    return list(beer_df['name'])
+    names = beer_df['name'].sort(axis = 1, inplace = False)
+    names = list(names)
+    return names
 
 # function used for connecting to the database
 def connect_db():
