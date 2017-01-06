@@ -10,8 +10,6 @@
 '''
 import os
 import cPickle as pickle
-from itertools import groupby
-from itertools import itemgetter
 from itertools import izip
 from flask import Flask
 from flask import render_template
@@ -27,6 +25,7 @@ from sklearn.neighbors import NearestNeighbors
 import sqlite3
 from utils import flatten
 from utils import convert_columns
+from utils import get_beer_names
 from utils import get_dfs
 from utils import get_dfs_train
 from utils import feature_select
@@ -61,11 +60,6 @@ app = Flask(__name__)
 # pulls in app configuration by looking for UPPERCASE variables
 app.config.from_object(__name__)
 
-def get_beer_names():
-    beer_df =  pd.read_pickle("../Data/beer_data_final.pkl")
-    names = beer_df['name'].sort(axis = 1, inplace = False)
-    names = list(names)
-    return names
 
 # function used for connecting to the database
 def connect_db():
