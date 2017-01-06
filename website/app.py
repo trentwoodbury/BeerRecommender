@@ -195,8 +195,10 @@ def main():
 
     beers = get_beer_names()
     beers_split = group_by_letter(beers)
+    alphabet = [chr(i) for i in range(65, 91)]
+    index_range = range(26, 0, -1)
 
-    return render_template('names_table.html', result=beers_split)
+    return render_template('search_table.html', result=[beers_split, alphabet, index_range])
 
 if __name__ == '__main__':
     Bootstrap(app)
