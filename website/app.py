@@ -28,6 +28,7 @@ from utils import convert_columns
 from utils import get_beer_names
 from utils import get_dfs
 from utils import get_dfs_train
+from utils import group_by_letter
 from utils import feature_select
 from utils import normalize
 from utils import vectorize
@@ -193,21 +194,7 @@ def load_template_data_point():
 def main():
 
     beers = get_beer_names()
-    beers_split = []
-
-    #Make a list of lists so that we have 5 beers per row
-    for i in range(len(beers)):
-        if i % 5 == 0:
-            beers_split.append([])
-        if len(beers[i]) > 22:
-            beers_split[-1].append(str(beers[i][:19]) + '...')
-        else:
-            beers_split[-1].append(beers[i])
-
-
-    #ensure That our table ends with 5 columns
-    if len(beers_split[-1]) != 5:
-        beers_split = beers_split[:-1]
+    beers_split = group_by_letter(beers)
 
     return render_template('names_table.html', result=beers_split)
 
