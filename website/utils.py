@@ -74,7 +74,7 @@ def connect_mongo(offline=False):
         print "Server error!  (Is it plugged in?): "
         print e
         raise e
-    
+
     raw = 'craft_beers_raw'
     clean = 'craft_beers'
 
@@ -116,7 +116,7 @@ def flatten(d, parent_key='', sep='_'):
 
 def convert_columns(df):
     ''' Take care of columns like: NaN(float) ... RwZ9MZ(unicode) ...
-        Store as graphlab compatible: None(NoneType) ... 'RwZ9MZ'(string) ... 
+        Store as graphlab compatible: None(NoneType) ... 'RwZ9MZ'(string) ...
         INPUT: pd.DataFrame
         OUTPUT: pd.DataFrame
     '''
@@ -215,3 +215,16 @@ def vectorize(dfs, vectorizer=None):
 
     return dfs, tfidf
 
+
+def first_letter(cell):
+    return str(cell[0]).lower()
+
+def get_beer_names():
+    #makes sorted list of all the beers
+    beer_df =  pd.read_pickle("../Data/beer_data_final.pkl")
+    names = beer_df['name'].sort_values(axis = 1, inplace = False)
+    names = list(names)
+    return names
+
+def group_by_letter(names):
+    alphabet = range(97, 123)
