@@ -222,7 +222,7 @@ def first_letter(cell):
 def get_beer_names():
     #makes sorted list of all the beers
     beer_df =  pd.read_pickle("../Data/beer_data_final.pkl")
-    names = beer_df['name'].sort_values(axis = 1, inplace = False)
+    names = beer_df['name'].sort_values(inplace = False)
     names = list(names)
     return names
 
