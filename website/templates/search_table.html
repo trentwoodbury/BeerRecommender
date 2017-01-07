@@ -60,8 +60,8 @@
 <ul id="myUL">
 {% for index in result[2] %}
   <li><a href="#" class="header">{{ result[1][index] }}</a></li>
-  {% for beer_name in result[0][26 - index] %}
-  <li><a href="#">{{beer_name}}</a></li>
+  {% for beer_name,id in result[0][26 - index] %}
+  <li><a href="{{url_for('display_beer')}}?id={{id}}">{{beer_name}}</a></li>
   {% endfor %}
 {% endfor %}
 </ul>
