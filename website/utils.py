@@ -221,16 +221,20 @@ def first_letter(cell):
 
 def get_beer_names():
     #makes sorted list of all the beers
-    beer_df =  pd.read_pickle("../Data/beer_data_final.pkl")
-    names = beer_df['name'].sort_values(inplace = False)
-    names = list(names)
-    return names
+    beer_file = "beer_data_full.pkl"
+    beer_path = os.path.join(os.pardir, 'Data', beer_file)
+    beer_df =  pd.read_pickle(beer_path)
+    beer_df = feature_select(beer_df)
+    beer_df.sort_values('name', inplace=True)
+    names_and_ids = beer_df[['name', 'id']]
+#    names_and_ids = list(names_and_ids.values)
+    return names_and_ids.values
 
 def group_by_letter(names):
     alphabet = range(97, 123)
     groups = [[] for i in range(27)]
     for name in names:
-        letter = ord(name[0].lower())
+        letter = ord(name[0][0].lower())
         if letter in range(97, 123):
             groups[122 - letter].append(name)
         else:

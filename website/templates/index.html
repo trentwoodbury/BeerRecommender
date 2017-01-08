@@ -99,7 +99,8 @@
 					   is an open source project. Want to contribute? Click
 					   the github link at the bottom of the page!
 
-                       Click on any beer to see 5 similar beers. It's that simple!
+                       Click on any beer to see its description and 4 similar
+					   beers. It's that simple!
 					</p>
                 </div>
                 <div class="col-lg-4">
@@ -116,8 +117,28 @@
         </div>
     </section>
 
-    <!-- Portfolio Grid Section -->
-        <section class="success" id="about">
+	<!-- Describe a beer! -->
+	<section id="describe">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12 text-center">
+					<h2> Describe a Beer</h2>
+					<hr class="star-primary">
+					<form action="{{url_for('display_beer')}}" method="post">
+					<input type="text" name="desc" style="width: 200px"
+						   placeholder="Description (caramel toffee...)"><br>
+					<input type="number" min="0" max="11" name='abv'
+						   style="width: 200px"
+						   placeholder="ABV (e.g. 5.0)"><br>
+					<input type="submit" value="Find it!">
+					</form>
+				</div>
+			</div>
+		</div>
+    </section>
+
+    <!-- Search for a beer! -->
+	<section class="success" id="search">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
@@ -129,8 +150,6 @@
             {% endblock %}
         </div>
     </section>
-
-
 
     <!-- Footer -->
 <section id="contact">

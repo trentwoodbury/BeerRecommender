@@ -66,7 +66,7 @@ app.config.from_object(__name__)
 def connect_db():
     return sqlite3.connect(app.config['DATABASE'])
 
-@app.route('/display_beer', methods=['POST'])
+@app.route('/display_beer', methods=['GET', 'POST'])
 def display_beer():
 
     global DFS_ONE
@@ -74,17 +74,35 @@ def display_beer():
     global NORMALIZER
     global VECTORIZER
 
-    # TODO: Add form validation
-    text = request.form['description']
-    desc_text = unicode(text.lower())
+    if request.method == 'GET':
+        beer_id = request.args.get('id')
 
-    abv = int(request.form['abv'])
+        # Load the selected entry into DFS_ONE
+        DFS_ONE = DFS[DFS['id'] == beer_id]
+        del DFS_ONE['id']
 
-    DFS_ONE['description'] = desc_text
-    DFS_ONE['style_description'] = desc_text
-    DFS_ONE['abv'] = abv
-    DFS_ONE['style_abvMax'] = float(abv)
-    DFS_ONE['style_abvMin'] = float(abv)
+        name = DFS_ONE['name'].iloc[0]
+        style_name = "(" + DFS_ONE['style_name'].iloc[0] + ")"
+    elif request.method == 'POST':
+        # TODO: Add form validation
+        text = request.form['desc']
+        desc_text = unicode(text.lower())
+
+        abv = int(request.form['abv'])
+
+        # Load generic data point into DFS_ONE
+        load_template_data_point()
+
+        DFS_ONE['description'] = desc_text
+        DFS_ONE['style_description'] = desc_text
+        DFS_ONE['abv'] = abv
+        DFS_ONE['style_abvMax'] = float(abv)
+        DFS_ONE['style_abvMin'] = float(abv)
+
+        name = desc_text
+        style_name = " (" + unicode(abv) + "%)"
+    else:
+        raise ValueError("ValueError: Neither POST nor GET...")
 
     # Copy to local variable! (As these changes would persist)
     query_pt_pd = DFS_ONE.copy()
@@ -97,9 +115,6 @@ def display_beer():
     dist, ind = KNN.kneighbors(query_pt_pd)
 
     nns = DFS.iloc[ind[0]].copy()
-
-    name = desc_text
-    style_name = " (" + unicode(abv) + "%)"
 
     html = df_to_html(nns)
 
@@ -145,8 +160,8 @@ def load_training_data():
     DFS_TRAIN = get_dfs_train()
 
     # Get rid of 'id' -- was used in graphlab
-    if 'id' in DFS.columns.tolist():
-        del DFS['id']
+#    if 'id' in DFS.columns.tolist():
+#        del DFS['id']
     if 'id' in DFS_TRAIN.columns.tolist():
         del DFS_TRAIN['id']
 
@@ -199,7 +214,8 @@ def main():
     alphabet.extend([chr(i) for i in range(65, 91)])
     index_range = range(27)
 
-    return render_template('search_table.html', result=[beers_split, alphabet, index_range])
+    return render_template('search_table.html',
+                           result=[beers_split, alphabet, index_range])
 
 if __name__ == '__main__':
     Bootstrap(app)
