@@ -73,8 +73,8 @@ def insert_location_json():
 
     #loop through each beer in the MongoDB craft_beers collection
     page_nums = range(1,188)
-        for page_num in page_nums:
-        query_url = 'http://api.brewerydb.com/v2/locations?key={}?p={}'.format(api_key, page_num)
+    for page_num in page_nums:
+        query_url = 'http://api.brewerydb.com/v2/locations?key={}&p={}'.format(api_key, page_num)
         query = Request(query_url)
         f = urlopen(query)
         brewery_str = f.read()
