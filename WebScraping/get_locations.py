@@ -83,4 +83,5 @@ def insert_location_json():
         beer_co.insert_one(json.loads(brewery_str))
 
 if __name__ == "__main__":
+    #Takes roughly 5 minutes to run
     insert_location_json()
