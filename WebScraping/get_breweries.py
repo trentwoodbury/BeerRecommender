@@ -75,18 +75,13 @@ def insert_brewery_json():
     beer_ids_list = list(beerdb.craft_beers.find({"id":{"$exists": "true"}}, {"id":1, "_id":0}))
     beer_ids = [id.values() for id in beer_ids_list]
 
-    print beer_ids
 
 
-    for beer_id[0] in beer_ids:
-        query_url = 'http://api.brewerydb.com/v2/beer/{}/breweries?key={}'.format(beer_id,api_key)
+    for beer_id in beer_ids:
+        query_url = 'http://api.brewerydb.com/v2/beer/{}/breweries?key={}'.format(beer_id[0],api_key)
         query = Request(query_url)
         f = urlopen(query)
         brewery_str = f.read()
-
-        # Extract ABV and Page for printing status
-        m = re.search(r'abv=\d+&p=\d+', query_url)
-        abv_page, page_num = re.findall(r'\d+', m.group())
 
         # Insert into MongoDB
         beer_co.insert_one(json.loads(brewery_str))
@@ -96,4 +91,5 @@ def insert_brewery_json():
 
 
 if __name__ == "__main__":
+    #This takes ~2 hours to run
     insert_brewery_json()
