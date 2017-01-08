@@ -95,12 +95,11 @@
             </div>
             <div class="row">
                 <div class="col-lg-4 col-lg-offset-2">
-                    <p>Our goal is to help you find new beers to enjoy. This
-					   is an open source project. Want to contribute? Click
+                    <p>Our goal is to help you find new beers to enjoy.</p>
+                </div>
+                <div class="col-lg-4">
+                    <p>This is an open source project. Want to contribute? Click
 					   the github link at the bottom of the page!
-
-                       Click on any beer to see its description and 4 similar
-					   beers. It's that simple!
 					</p>
                 </div>
                 <div class="col-lg-4">
@@ -141,7 +140,7 @@
                     <font color="black">
                     <form action="{{url_for('display_beer')}}" method="post">
                     <input type="text" name="desc" id="myInput2"
-                           placeholder="Description (caramel toffee...)" required><br>
+                           placeholder="Description (e.g. caramel toffee...)" required><br>
                     <input type="number" min="0" max="11" name='abv'
                            id="myInput2"
                            placeholder="ABV (e.g. 5.0)" required><br>
