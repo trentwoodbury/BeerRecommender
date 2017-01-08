@@ -67,4 +67,4 @@ if __name__ == '__main__':
         try:
             beer_co_clean.insert_one(entry['data'][0])
         except:
-            pass
+            beer_co_clean.insert_one({})
