@@ -39,7 +39,7 @@ if __name__ == '__main__':
         print "Server error!  (Is it plugged in?): "
         print e
         raise e
-    
+
     raw = 'craft_beers_raw'
     clean = 'craft_beers'
 
@@ -55,8 +55,8 @@ if __name__ == '__main__':
         print clean + ' already exists! Check or drop.'
         sys.exit()
 
-    beer_co_raw = db['craft_beers_raw']
-    beer_co_clean = db['craft_beers']
+    beer_co_raw = db[raw]
+    beer_co_clean = db[clean]
 
     ########################
     # Process / Write to DB
@@ -66,5 +66,3 @@ if __name__ == '__main__':
     for entry in beer_co_raw.find():
         for e in entry['data']:
             beer_co_clean.insert_one(e)
-
-
