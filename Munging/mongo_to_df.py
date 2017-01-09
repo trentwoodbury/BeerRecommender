@@ -52,8 +52,14 @@ if __name__ == '__main__':
     # Get rid of mongo id
     del df_beers['_id']
     df_beers = convert_columns(df_beers)
-    df_breweries = df_breweries.loc[:, ['images_icon', 'name', 'website']]
 
+    #Subset columns on df_beers and df_breweries
+    df_beers = df_beers.loc[:, ['abv', 'description', 'ibu', 'id', 'isOrganic', 'name', 'nameDisplay', 'style_fgMax', 'style_fgMin']]
+    df_breweries = df_breweries.loc[:, ['images_icon', 'name', 'website']]
+    df_breweries.rename(columns = {"name": "brewery_name"}, inplace = True)
+    df_breweries.loc[:,'images_icon'] = df_breweries['images_icon'].fillna(value = 'http://downloadicons.net/sites/default/files/beer-icons-46158.png')
+
+    #Concatenate df_breweries and df_beers
     df_beers = pd.concat([df_beers, df_breweries], axis = 1)
     df_beers.drop_duplicates(inplace=True)
 
