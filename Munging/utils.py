@@ -74,7 +74,7 @@ def connect_mongo(offline=False):
         print "Server error!  (Is it plugged in?): "
         print e
         raise e
-    
+
     raw = 'craft_beers_raw'
     clean = 'craft_beers'
 
@@ -93,6 +93,55 @@ def connect_mongo(offline=False):
     beer_co_clean = db['craft_beers']
 
     return beer_co_clean
+
+
+def connect_breweries(offline=False):
+        ''' Script to connect to the 'beer_db' MongoDB database, as set up in the environment variables.
+            INPUT: bool
+            OUTPUT: Mongo Collection -- 'breweries_clean'
+        '''
+
+        MONGO_USERNAME = os.environ['MONGO_USERNAME']
+        MONGO_PASSWORD = os.environ['MONGO_PASSWORD']
+
+        if offline:
+            MONGO_HOSTNAME = 'localhost'
+        else:
+            MONGO_HOSTNAME = os.environ['MONGO_HOSTNAME']
+
+        # Check server:
+        try:
+            address = 'mongodb://'
+            address += MONGO_USERNAME + ':'
+            address += MONGO_PASSWORD + '@'
+            address += MONGO_HOSTNAME
+            cli = MongoClient(address, serverSelectionTimeoutMS=100)
+            cli.server_info()
+
+        except ServerSelectionTimeoutError as e:
+            print "Server error!  (Is it plugged in?): "
+            print e
+            raise e
+
+        raw = 'breweries_raw'
+        clean = 'breweries_clean'
+
+        db = cli['beer_db']
+        cols = db.collection_names()
+
+        # Check for collections:
+        if raw not in cols:
+            print raw + ' does not exists yet! Run web-scraper first!'
+            sys.exit()
+
+        if clean not in cols:
+            print clean + ' does not exists! Run raw_to_clean.py first!'
+            sys.exit()
+
+        beer_co_clean = db[clean]
+
+        return beer_co_clean
+
 
 
 def flatten(d, parent_key='', sep='_'):
@@ -116,7 +165,7 @@ def flatten(d, parent_key='', sep='_'):
 
 def convert_columns(df):
     ''' Take care of columns like: NaN(float) ... RwZ9MZ(unicode) ...
-        Store as graphlab compatible: None(NoneType) ... 'RwZ9MZ'(string) ... 
+        Store as graphlab compatible: None(NoneType) ... 'RwZ9MZ'(string) ...
         INPUT: pd.DataFrame
         OUTPUT: pd.DataFrame
     '''
@@ -214,4 +263,3 @@ def vectorize(dfs, vectorizer=None):
     del dfs['text']
 
     return dfs, tfidf
-
