@@ -40,7 +40,7 @@ if __name__ == '__main__':
     for entry in beer_co_clean.find():
         my_beers.append(flatten(entry))
     for entry in breweries_clean.find():
-        my_breweries.append(flattent(entry))
+        my_breweries.append(flatten(entry))
 
     ## Feature selections?
     df_beers = pd.DataFrame(my_beers)
@@ -52,7 +52,7 @@ if __name__ == '__main__':
     # Get rid of mongo id
     del df_beers['_id']
     df_beers = convert_columns(df_beers)
-    df_breweries = conver_columns(df_breweries)
+    df_breweries = df_breweries.loc[:, ['images_icon', 'name', 'website']]
 
     df_beers = pd.concat([df_beers, df_breweries], axis = 1)
     df_beers.drop_duplicates(inplace=True)
