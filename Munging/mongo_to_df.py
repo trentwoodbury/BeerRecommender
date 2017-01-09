@@ -20,6 +20,7 @@ import numpy as np
 from unidecode import unidecode
 from pymongo import MongoClient
 
+from utils import connect_breweries
 from utils import connect_mongo
 from utils import flatten
 from utils import convert_columns
@@ -30,14 +31,15 @@ if __name__ == '__main__':
     ########
     # Load
     beer_co_clean = connect_mongo()
+    breweries_clean = connect_breweries()
 
     # Add entries to Pandas dataframe:
-    mydata = []
+    mybeers = []
     for entry in beer_co_clean.find():
-        mydata.append(flatten(entry))
+        mybeers.append(flatten(entry))
 
     ## Feature selections?
-    df = pd.DataFrame(mydata)
+    df = pd.DataFrame(mybeers)
 
     #############
     # Transform
@@ -52,6 +54,7 @@ if __name__ == '__main__':
 
     savefile = os.path.join(os.pardir, 'Data', 'beer_data_full.pkl')
     save_web = os.path.join(os.pardir, 'website', 'beer_data_full.pkl')
+
 
     with open(savefile, 'wb') as f:
         pickle.dump(df, f, protocol=pickle.HIGHEST_PROTOCOL)
