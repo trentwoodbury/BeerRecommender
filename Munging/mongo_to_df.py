@@ -34,20 +34,28 @@ if __name__ == '__main__':
     breweries_clean = connect_breweries()
 
     # Add entries to Pandas dataframe:
-    mybeers = []
+    my_beers = []
+    my_breweries = []
+
     for entry in beer_co_clean.find():
-        mybeers.append(flatten(entry))
+        my_beers.append(flatten(entry))
+    for entry in breweries_clean.find():
+        my_breweries.append(flattent(entry))
 
     ## Feature selections?
-    df = pd.DataFrame(mybeers)
+    df_beers = pd.DataFrame(my_beers)
+    df_breweries = pd.DataFrame(my_breweries)
 
     #############
     # Transform
 
     # Get rid of mongo id
-    del df['_id']
-    df = convert_columns(df)
-    df.drop_duplicates(inplace=True)
+    del df_beers['_id']
+    df_beers = convert_columns(df_beers)
+    df_breweries = conver_columns(df_breweries)
+
+    df_beers = pd.concat([df_beers, df_breweries], axis = 1)
+    df_beers.drop_duplicates(inplace=True)
 
     ########
     # Save
@@ -57,6 +65,6 @@ if __name__ == '__main__':
 
 
     with open(savefile, 'wb') as f:
-        pickle.dump(df, f, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(df_beers, f, protocol=pickle.HIGHEST_PROTOCOL)
     with open(save_web, 'wb') as f:
-        pickle.dump(df, f, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(df_beers, f, protocol=pickle.HIGHEST_PROTOCOL)
