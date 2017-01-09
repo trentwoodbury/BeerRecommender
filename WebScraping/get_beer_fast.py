@@ -162,5 +162,3 @@ if __name__ == "__main__":
     #abv_pages = {4: 16}
 
     get_beer(abv_pages)
-
-

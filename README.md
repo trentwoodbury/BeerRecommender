@@ -24,8 +24,3 @@ SQLite<br>
 
 # Status
 This project is currently in progress. We are currently deploying and editing the website at beerecommender.com.
-<br><b>To Do List:</b>
-<ul>
-    <li>Add brewery names to group_by_letters() function (Trent)</li>
-    <li>Link KNN results to beer names </li>
-    <li>Add link back to home page for ABV search</li>

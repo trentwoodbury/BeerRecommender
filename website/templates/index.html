@@ -55,7 +55,7 @@
                         <a href="#portfolio">About</a>
                     </li>
                     <li class="page-scroll">
-                        <a href="#about">View Beers</a>
+                        <a href="#search">View Beers</a>
                     <li class="page-scroll">
                         <a href="#contact">Contact</a>
                     </li>
@@ -95,12 +95,11 @@
             </div>
             <div class="row">
                 <div class="col-lg-4 col-lg-offset-2">
-                    <p>Our goal is to help you find new beers to enjoy. This
-					   is an open source project. Want to contribute? Click
+                    <p>Our goal is to help you find new beers to enjoy.</p>
+                </div>
+                <div class="col-lg-4">
+                    <p>This is an open source project. Want to contribute? Click
 					   the github link at the bottom of the page!
-
-                       Click on any beer to see its description and 4 similar
-					   beers. It's that simple!
 					</p>
                 </div>
                 <div class="col-lg-4">
@@ -117,28 +116,45 @@
         </div>
     </section>
 
-	<!-- Describe a beer! -->
-	<section id="describe">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-12 text-center">
-					<h2> Describe a Beer</h2>
-					<hr class="star-primary">
-					<form action="{{url_for('display_beer')}}" method="post">
-					<input type="text" name="desc" style="width: 200px"
-						   placeholder="Description (caramel toffee...)"><br>
-					<input type="number" min="0" max="11" name='abv'
-						   style="width: 200px"
-						   placeholder="ABV (e.g. 5.0)"><br>
-					<input type="submit" value="Find it!">
-					</form>
-				</div>
-			</div>
-		</div>
-    </section>
-
     <!-- Search for a beer! -->
+<style>
+#myInput2 {
+  background-image: url('/css/searchicon.png');
+  background-position: 10px 12px;
+  background-repeat: no-repeat;
+  width: 100%;
+  font-size: 16px;
+  padding: 12px 20px 12px 40px;
+  border: 1px solid #ddd;
+  margin-bottom: 12px;
+  border-radius:5px;
+}
+</style>
+
 	<section class="success" id="search">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2> Describe a Beer</h2>
+                    <hr class="star-light">
+                    <font color="black">
+                    <form action="{{url_for('display_beer')}}" method="post">
+                    <input type="text" name="desc" id="myInput2"
+                           placeholder="Description (e.g. caramel toffee...)" required><br>
+                    <input type="number" min="0" max="11" name='abv'
+                           id="myInput2"
+                           placeholder="ABV (e.g. 5.0)" required><br>
+                    <input type="submit" value="Find it!" style="border-radius:5px;">
+                    </font>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        <h1><br><center>OR...</center><br></h1>
+
+
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">

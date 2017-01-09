@@ -40,8 +40,8 @@ if __name__ == '__main__':
         print e
         raise e
 
-    raw = 'craft_beers_raw'
-    clean = 'craft_beers'
+    raw = 'breweries_raw'
+    clean = 'breweries_clean'
 
     db = cli['beer_db']
     cols = db.collection_names()
@@ -64,5 +64,7 @@ if __name__ == '__main__':
     # DYLAN: I got 244 pages -> 12200 beers  (though I think it should be 247?)
     # Each document will be one beer:
     for entry in beer_co_raw.find():
-        for e in entry['data']:
-            beer_co_clean.insert_one(e)
+        try:
+            beer_co_clean.insert_one(entry['data'][0])
+        except:
+            beer_co_clean.insert_one({})
