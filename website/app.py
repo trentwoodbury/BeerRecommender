@@ -14,15 +14,11 @@ from itertools import izip
 from flask import Flask
 from flask import render_template
 from flask import request
-#from flask import session
-#from flask import flash
-#from flask import redirect
-#from flask import url_for
-#from flask import g
 from flask_bootstrap import Bootstrap
 import pandas as pd
 from sklearn.neighbors import NearestNeighbors
 import sqlite3
+
 from utils import flatten
 from utils import convert_columns
 from utils import get_beer_names
@@ -56,10 +52,13 @@ KNN = None
 # Web App
 ###########
 
-app = Flask(__name__)
+PROJECT_ROOT = os.path.dirname(__file__)
+DATA_DIR = os.path.join(PROJECT_ROOT, os.pardir, 'Data')
+
+application = app = Flask(__name__)
 
 # pulls in app configuration by looking for UPPERCASE variables
-app.config.from_object(__name__)
+#app.config.from_object(__name__)
 
 
 # function used for connecting to the database
@@ -128,6 +127,8 @@ def df_to_html(dfs, limit=10):
     ''' Returns block of HTML of up to 10 results
         INPUT: pd.DataFrame -- DataFrame containing nearest neighbors.
         OUTPUT: string
+
+        TODO: Change this into Jinja2 in html file.
     '''
     html = ""
 
@@ -171,7 +172,7 @@ def load_model():
     global NORMALIZER
     global VECTORIZER
 
-    model_file = os.path.join(os.pardir, 'Data', 'knn_model.pkl')
+    model_file = os.path.join(DATA_DIR, 'knn_model.pkl')
     with open(model_file, 'rb') as f:
         model = pickle.load(f)
 
@@ -217,11 +218,17 @@ def main():
     return render_template('search_table.html',
                            result=[beers_split, alphabet, index_range])
 
-if __name__ == '__main__':
+
+#@app.before_first_request
+def load_data_model():
     Bootstrap(app)
 
     load_training_data()
     load_template_data_point()
     load_model()
 
+# Load on startup (for elasticbeanstalk, when imported)
+load_data_model()
+
+if __name__ == '__main__':
     app.run(debug=True)
