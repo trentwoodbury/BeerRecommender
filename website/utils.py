@@ -26,6 +26,8 @@ COLUMNS = ['abv', 'description', 'isOrganic', 'name', 'nameDisplay',\
            'style_ibuMax', 'style_ibuMin', 'style_name', 'style_ogMin',
            'style_shortName', 'style_srmMax', 'style_srmMin', 'id']
 
+project_root = os.path.dirname(__file__)
+DATA_DIR = os.path.join(project_root, os.pardir, 'Data')
 
 def display_non_nan(df):
     ''' Displays a sampling of the non null values of all the columns
@@ -132,7 +134,7 @@ def convert_columns(df):
 
 
 def get_dfs():
-    data_file = os.path.join(os.pardir, 'Data', 'beer_data_full.pkl')
+    data_file = os.path.join(DATA_DIR, 'beer_data_full.pkl')
 
     with open(data_file, 'rb') as f:
         df = pickle.load(f)
@@ -142,7 +144,7 @@ def get_dfs():
     return dfs
 
 def get_dfs_train():
-    data_file = os.path.join(os.pardir, 'Data', 'beer_data_train.pkl')
+    data_file = os.path.join(DATA_DIR, 'beer_data_train.pkl')
 
     with open(data_file, 'rb') as f:
         df = pickle.load(f)
@@ -222,12 +224,11 @@ def first_letter(cell):
 def get_beer_names():
     #makes sorted list of all the beers
     beer_file = "beer_data_full.pkl"
-    beer_path = os.path.join(os.pardir, 'Data', beer_file)
+    beer_path = os.path.join(DATA_DIR, beer_file)
     beer_df =  pd.read_pickle(beer_path)
     beer_df = feature_select(beer_df)
     beer_df.sort_values('name', inplace=True)
     names_and_ids = beer_df[['name', 'id']]
-#    names_and_ids = list(names_and_ids.values)
     return names_and_ids.values
 
 def group_by_letter(names):
