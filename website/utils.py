@@ -20,11 +20,19 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 # Custom column selection:
-COLUMNS = ['abv', 'description', 'isOrganic', 'name', 'nameDisplay',\
-           'style_abvMax', 'style_abvMin', 'style_category_name', \
-           'style_description', 'style_fgMax', 'style_fgMin', \
-           'style_ibuMax', 'style_ibuMin', 'style_name', 'style_ogMin',
-           'style_shortName', 'style_srmMax', 'style_srmMin', 'id']
+COLUMNS = ['abv',
+ 'description',
+ 'style_ibuMax',
+ 'id',
+ 'isOrganic',
+ 'name',
+ 'nameDisplay',
+ 'style_name',
+ 'style_fgMax',
+ 'style_fgMin',
+ 'images_icon',
+ 'brewery_name',
+ 'website']
 
 project_root = os.path.dirname(__file__)
 DATA_DIR = os.path.join(project_root, os.pardir, 'Data')
