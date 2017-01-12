@@ -81,6 +81,8 @@ def display_beer():
         del DFS_ONE['id']
 
         name = DFS_ONE['name'].iloc[0]
+        brewery = DFS_ONE['brewery_name']
+
         style_name = "(" + DFS_ONE['style_name'].iloc[0] + ")"
     elif request.method == 'POST':
         # TODO: Add form validation
@@ -139,6 +141,7 @@ def df_to_html(dfs, limit=10):
         html += unicode(entries+1) + ".  "
         html += unicode(r[1]['name'])
         html += " (" + unicode(r[1]['style_name']) + ")"
+        html += " - " + unicode(r[1]['brewery_name'])
         html += "</h4>"
         html += unicode(r[1]['description'])
         html += "</p>"
