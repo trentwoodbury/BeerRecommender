@@ -20,11 +20,19 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 # Custom column selection:
-COLUMNS = ['abv', 'description', 'isOrganic', 'name', 'nameDisplay',\
-           'style_abvMax', 'style_abvMin', 'style_category_name', \
-           'style_description', 'style_fgMax', 'style_fgMin', \
-           'style_ibuMax', 'style_ibuMin', 'style_name', 'style_ogMin',
-           'style_shortName', 'style_srmMax', 'style_srmMin', 'id']
+COLUMNS = ['abv',
+ 'description',
+ 'style_ibuMax',
+ 'id',
+ 'isOrganic',
+ 'name',
+ 'nameDisplay',
+ 'style_name',
+ 'style_fgMax',
+ 'style_fgMin',
+ 'images_icon',
+ 'brewery_name',
+ 'website']
 
 
 def display_non_nan(df):
@@ -74,7 +82,7 @@ def connect_mongo(offline=False):
         print "Server error!  (Is it plugged in?): "
         print e
         raise e
-    
+
     raw = 'craft_beers_raw'
     clean = 'craft_beers'
 
@@ -116,7 +124,7 @@ def flatten(d, parent_key='', sep='_'):
 
 def convert_columns(df):
     ''' Take care of columns like: NaN(float) ... RwZ9MZ(unicode) ...
-        Store as graphlab compatible: None(NoneType) ... 'RwZ9MZ'(string) ... 
+        Store as graphlab compatible: None(NoneType) ... 'RwZ9MZ'(string) ...
         INPUT: pd.DataFrame
         OUTPUT: pd.DataFrame
     '''
@@ -214,4 +222,3 @@ def vectorize(dfs, vectorizer=None):
     del dfs['text']
 
     return dfs, tfidf
-
