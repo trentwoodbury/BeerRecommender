@@ -41,9 +41,12 @@ from utils import vectorize
 #     # Recommendations:
 #     nn = similarity_model.get_similar_items(['p0p1', 'p0p2'])
 
+
 def get_data():
     dfs = get_dfs()
     dfs = feature_select(dfs)
+    dfs = dfs.groupby('id').first().copy()
+    dfs.reset_index(inplace = True)
     dfs_train = dfs.copy()
 
     del dfs_train['id']
@@ -74,9 +77,12 @@ def train_knn(dfs, dfs_train, neighbors = 6 ):
 
     dist, ind = knn.kneighbors(dfs_one)
 
-    nn = dfs[ind[0][0]:ind[0][1]]
+    nn = dfs.iloc[ind[0][0], :]
+    print "ind :", dfs.iloc[ind[0][0], :] , "\n dist:", dist
+    print "nn: \n", nn
+    print dfs.iloc[524, :] == dfs.iloc[1, :]
 
-    if nn['id'].iloc[0] == 'SJTtiL':
+    if nn['id'][0] == 'SJTtiL':
         print "Test Passed! Model is working."
     else:
         print "Test Failed!"
