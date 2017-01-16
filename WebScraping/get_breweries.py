@@ -5,8 +5,6 @@
 
     DESCRIPTION: Retrieves brewery data for each beer and attaches brewery data to dictionary associated with each beer.
 
-    and multiprocessed for speed of web-scraping.
-
     NOTE: Make sure you have MongoDB running. To run AWS MongoDB locally, use mongo $MONGO_HOSTNAME:27017 -u $MONGO_USERNAME -p $MONGO_PASSWORD --authenticationDatabase admin
 '''
 

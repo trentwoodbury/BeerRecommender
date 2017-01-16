@@ -47,13 +47,14 @@ VECTORIZER = None
 
 KNN = None
 
+PROJECT_ROOT = os.path.dirname(__file__)
+DATA_DIR = os.path.join(PROJECT_ROOT, os.pardir, 'Data')
+
+MAPBOX_API_TOKEN = os.environ['MAPBOX_API_TOKEN']
 
 ###########
 # Web App
 ###########
-
-PROJECT_ROOT = os.path.dirname(__file__)
-DATA_DIR = os.path.join(PROJECT_ROOT, os.pardir, 'Data')
 
 application = app = Flask(__name__)
 
@@ -125,6 +126,38 @@ def display_beer():
                            result_html=html, brewery = brewery)
 
 
+@app.route('/beer_map')
+def map_beer():
+    ''' Finds nearest neighbors from GET id and puts their longitude and
+        latitude into 'data', to be rendered on the map.
+
+        XXX: So far simply demonstrates the existence of a map, with fake
+             data point.
+
+        TODO: Put together the location data with the other data.
+        TODO: Limit by 10 miles? Other limitation?
+    '''
+    pt_idx = 1
+    query_pt_pd = DFS[pt_idx:pt_idx+1].copy()
+    query_pt = query_pt_pd.copy()
+    del query_pt['id']
+    query_pt, _ = vectorize(query_pt, vectorizer=VECTORIZER)
+    query_pt, _ = normalize(query_pt, normalizer=NORMALIZER)
+    dist, ind = KNN.kneighbors(query_pt)
+    nns = DFS.iloc[ind[0]]
+
+    data = nns[['latitude', 'longitude']].values.tolist()
+    name = query_pt_pd['name'].iloc[0]
+    style_name = "(" + query_pt_pd['style_name'].iloc[0] + ")"
+
+    return render_template('beer_map.html',
+                           mapbox_api_token=MAPBOX_API_TOKEN,
+                           data=data,
+                           zoom=5,
+                           name=name,
+                           style_name=style_name)
+
+
 def df_to_html(dfs, limit=10):
     ''' Returns block of HTML of up to 10 results
         INPUT: pd.DataFrame -- DataFrame containing nearest neighbors.
@@ -160,6 +193,7 @@ def load_training_data():
 
     DFS = get_dfs()
     DFS = feature_select(DFS)
+    DFS = convert_columns(DFS)
 
     DFS_TRAIN = get_dfs_train()
 
