@@ -69,6 +69,9 @@ def train_knn(dfs, dfs_train, neighbors = 6 ):
     # Fake/test/new data points:
     dfs_one = dfs[1:2].copy()
     del dfs_one['id']
+    del dfs_one['images_icon']
+    del dfs_one['brewery_name']
+    del dfs_one['website']
 
     dfs_one['style_fgMax'] = 1.01
 
