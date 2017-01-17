@@ -78,7 +78,7 @@ def insert_brewery_json():
 
 
     for beer_id in beer_ids:
-        query_url = 'http://api.brewerydb.com/v2/beer/{}/breweries?key={}'.format(beer_id[0],api_key)
+        query_url = 'http://api.brewerydb.com/v2/beer/{}/breweries?key={}?withLocations=Y'.format(beer_id[0],api_key)
         query = Request(query_url)
         f = urlopen(query)
         brewery_str = f.read()
