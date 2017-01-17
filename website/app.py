@@ -122,7 +122,7 @@ def display_beer():
     return render_template('display_beer.html',
                            name=name,
                            style_name=style_name,
-                           result_html=html)
+                           result_html=html, brewery = brewery)
 
 
 def df_to_html(dfs, limit=10):
