@@ -106,9 +106,6 @@ def display_beer():
     # Copy to local variable! (As these changes would persist)
     query_pt_pd = DFS_ONE.copy()
 
-    print query_pt_pd
-    print DFS_ONE
-
     query_pt_pd, _ = vectorize(query_pt_pd, vectorizer=VECTORIZER)
     query_pt_pd, _ = normalize(query_pt_pd, normalizer=NORMALIZER)
 
