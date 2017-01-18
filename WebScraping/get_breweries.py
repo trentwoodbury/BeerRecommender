@@ -64,23 +64,22 @@ beer_co = beerdb[COLLECTION_NAME]
 
 ##########################################
 
-def get_beer_id_list():
-    #INPUT: none
-    #OUTPUT: list of beer ids from Mongo Database
-
-    #loop through each beer in the MongoDB craft_beers collection
-    beer_ids_list = list(beerdb.craft_beers.find({"id":{"$exists": "true"}}, {"id":1, "_id":0}))
-    beer_ids = [id.values() for id in beer_ids_list]
-    return beer_ids
-
-
-def insert_brewery_json(beer_id):
+def insert_brewery_json():
     ''' Takes the beer_id and inserts ONE entry into the Mongo database.
         INPUT: beer_ids, output of get_beer_id_list
         OUTPUT: None
     '''
+
+    #loop through each beer in the MongoDB craft_beers collection
+    beer_ids_list = list(beerdb.craft_beers.find({"id":{"$exists": "true"}}, {"id":1, "_id":0}))
+    beer_ids = [id.values() for id in beer_ids_list]
+
+    count = 0
     for beer_id in beer_ids:
-        query_url = 'http://api.brewerydb.com/v2/beer/{}/breweries?key={}?withLocations=Y'.format(beer_id[0],api_key)
+        count +=1
+        if count % 1000 == 0:
+            print "{} beers completes".format(count)
+        query_url = 'http://api.brewerydb.com/v2/beer/{}/breweries?key={}'.format(beer_id[0],api_key)
         query = Request(query_url)
         f = urlopen(query)
         brewery_str = f.read()
@@ -88,16 +87,8 @@ def insert_brewery_json(beer_id):
         # Insert into MongoDB
         beer_co.insert_one(json.loads(brewery_str))
 
-def multi_import(beer_ids):
-    #INPUT: beer_ids, list of beer ids
-    #OUPUT: None
-
-    p = mp.Pool(mp.cpu_count())
-    p.map(insert_brewery_json, beer_ids)
-
 
 
 if __name__ == "__main__":
-    #This takes ~45 minutes to run
-    beer_ids = get_beer_id_list()
-    multi_import(beer_ids)
+    #This takes ~2 hours to run
+    insert_brewery_json()
