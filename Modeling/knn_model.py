@@ -50,6 +50,9 @@ def get_data():
     dfs_train = dfs.copy()
 
     del dfs_train['id']
+    del dfs_train['images_icon']
+    del dfs_train['brewery_name']
+    del dfs_train['website']
     dfs_train, tfidf_vec = vectorize(dfs_train)
     dfs_train, normalizer = normalize(dfs_train)
 
@@ -117,9 +120,12 @@ def save_model(dfs_train, knn, normalizer, tfidf_vec):
     #OUTPUT: None. Saves model and data to "Data" folder
 
     data_file = os.path.join(os.pardir, 'Data', 'beer_data_train.pkl')
+    data_file2 = os.path.join(os.pardir, 'website', 'beer_data_train.pkl')
     model_file = os.path.join(os.pardir, 'Data', 'knn_model.pkl')
 
     with open(data_file, 'wb') as f:
+        pickle.dump(dfs_train, f)
+    with open(data_file2, 'wb') as f:
         pickle.dump(dfs_train, f)
     # only if we can actually pickle the object!
     with open(model_file, 'wb') as f:
@@ -131,7 +137,7 @@ if __name__ == '__main__':
 
     dfs, dfs_train, normalizer, tfidf_vec = get_data()
     knn = train_knn(dfs, dfs_train)
-    save_model
+    save_model(dfs_train, knn, normalizer, tfidf_vec)
 
 
 ##############
