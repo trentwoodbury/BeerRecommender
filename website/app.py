@@ -82,7 +82,6 @@ def display_beer():
 
         name = DFS_ONE['name'].iloc[0]
         brewery = DFS_ONE['brewery_name']
-
         style_name = "(" + DFS_ONE['style_name'].iloc[0] + ")"
     elif request.method == 'POST':
         # TODO: Add form validation
@@ -94,19 +93,21 @@ def display_beer():
         # Load generic data point into DFS_ONE
         load_template_data_point()
 
+        # XXX: make sure the columns are in our selected columns!
         DFS_ONE['description'] = desc_text
-        DFS_ONE['style_description'] = desc_text
         DFS_ONE['abv'] = abv
-        DFS_ONE['style_abvMax'] = float(abv)
-        DFS_ONE['style_abvMin'] = float(abv)
 
         name = desc_text
         style_name = " (" + unicode(abv) + "%)"
+        brewery = ""
     else:
         raise ValueError("ValueError: Neither POST nor GET...")
 
     # Copy to local variable! (As these changes would persist)
-    query_pt_pd = convert_columns(DFS_ONE.copy())
+    query_pt_pd = DFS_ONE.copy()
+
+    print query_pt_pd
+    print DFS_ONE
 
     query_pt_pd, _ = vectorize(query_pt_pd, vectorizer=VECTORIZER)
     query_pt_pd, _ = normalize(query_pt_pd, normalizer=NORMALIZER)
@@ -122,7 +123,8 @@ def display_beer():
     return render_template('display_beer.html',
                            name=name,
                            style_name=style_name,
-                           result_html=html, brewery = brewery)
+                           brewery=brewery,
+                           result_html=html)
 
 
 def df_to_html(dfs, limit=10):

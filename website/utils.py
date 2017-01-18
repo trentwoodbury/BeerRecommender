@@ -22,6 +22,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 # Custom column selection:
 COLUMNS = ['abv',
  'description',
+ 'style_description',
  'style_ibuMax',
  'id',
  'isOrganic',
@@ -132,7 +133,7 @@ def convert_columns(df):
     '''
     for col in df:
         if df[col].dtype == np.object:
-            df[col] = df[col].apply(lambda x: None if type(x) == float \
+            df[col] = df[col].apply(lambda x: '' if type(x) == float \
                                                    else unidecode(x))
 
         # And convert 'float' columns:

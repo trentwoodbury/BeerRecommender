@@ -171,7 +171,7 @@ def convert_columns(df):
     '''
     for col in df:
         if df[col].dtype == np.object:
-            df[col] = df[col].apply(lambda x: None if type(x) == float \
+            df[col] = df[col].apply(lambda x: '' if type(x) == float \
                                                    else unidecode(x))
 
         # And convert 'float' columns:

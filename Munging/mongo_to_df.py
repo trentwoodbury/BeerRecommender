@@ -17,7 +17,6 @@ import cPickle as pickle
 
 import pandas as pd
 import numpy as np
-from unidecode import unidecode
 from pymongo import MongoClient
 
 from utils import connect_breweries
@@ -54,10 +53,11 @@ if __name__ == '__main__':
     df_beers = convert_columns(df_beers)
 
     #Subset columns on df_beers and df_breweries
-    df_beers = df_beers.loc[:, ['abv', 'description', 'style_ibuMax', 'id', 'isOrganic', 'name', 'style_name', 'nameDisplay', 'style_fgMax', 'style_fgMin']]
+    df_beers = df_beers.loc[:, ['abv', 'description', 'style_description', 'style_ibuMax', 'id', 'isOrganic', 'name', 'style_name', 'nameDisplay', 'style_fgMax', 'style_fgMin']]
     df_breweries = df_breweries.loc[:, ['images_icon', 'name', 'website']]
     df_breweries.rename(columns = {"name": "brewery_name"}, inplace = True)
     df_breweries.loc[:,'images_icon'] = df_breweries['images_icon'].fillna(value = 'http://downloadicons.net/sites/default/files/beer-icons-46158.png')
+    df_breweries = convert_columns(df_breweries)
 
     #Concatenate df_breweries and df_beers
     df_beers = pd.concat([df_beers, df_breweries], axis = 1)
