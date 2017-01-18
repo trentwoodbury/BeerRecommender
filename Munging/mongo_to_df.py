@@ -46,59 +46,22 @@ if __name__ == '__main__':
     df_beers = pd.DataFrame(my_beers)
     df_breweries = pd.DataFrame(my_breweries)
 
-
-    # LOCATIONS HACK -- should probably re-grab data:
-    #   beer_id -> [list of brewery ids, with location data]
-    #   unique id could be '_'.join([beerid, breweryid, locationid])
-    locations_file = os.path.join(os.pardir, 'Data', 'test_locations.pkl')
-    with open(locations_file, 'rb') as f:
-        df_locations = pickle.load(f)
-
-    df_locations_merge = df_locations.groupby('brewery_id').first().copy()
-
-#    df_beers.rename(columns={'id': 'beer_id'}, inplace=True)
-    df_breweries.rename(columns={"name": "breweryName",
-                                 'website': 'breweryWebsite',
-                                 'description': 'brewery_description',
-                                 'isOrganic': 'brewery_isOrganic',
-                                 'id': 'brewery_id'},
-                        inplace=True)
-    filler_image = 'http://downloadicons.net/sites/default/files/' \
-                    + 'beer-icons-46158.png'
-    df_breweries.loc[:,'images_icon'] = df_breweries['images_icon'].fillna(
-                    value=filler_image)
-    df_locations_merge.rename(columns={'id': 'locations_id',
-                                       'name': 'locations_brewery_name'},
-                              inplace=True)
-
-    df_merged = pd.merge(df_breweries, df_locations_merge,
-                         left_on='brewery_id',
-                         right_on='breweryId',
-                         how='left').copy()
-
-    df_full = pd.concat([df_beers, df_merged], axis=1)
-
-    COLUMNS = ['abv', 'description', 'style_ibuMax', 'id', 'isOrganic', \
-               'name', 'style_name', 'nameDisplay', 'style_fgMax', \
-               'style_fgMin', 'images_icon', 'brewery_name', \
-               'brewery_website', 'brewery_id', 'longitude', 'latitude']
-    df_full = df_full[COLUMNS]
-    df_full.drop_duplicates(inplace=True)
-    df_beers = df_full
     #############
     # Transform
 
     # Get rid of mongo id
-#    del df_beers['_id']
-#    df_beers = convert_columns(df_beers)
-#
-#    #Subset columns on df_beers and df_breweries
-#    df_beers = df_beers.loc[:, ['abv', 'description', 'style_ibuMax', 'id', 'isOrganic', 'name', 'style_name', 'nameDisplay', 'style_fgMax', 'style_fgMin']]
-#    df_breweries = df_breweries.loc[:, ['images_icon', 'name', 'website', 'id']]
-#
-#    #Concatenate df_breweries and df_beers
-#    df_beers = pd.concat([df_beers, df_breweries], axis = 1)
-#    df_beers.drop_duplicates(inplace=True)
+    del df_beers['_id']
+    df_beers = convert_columns(df_beers)
+
+    #Subset columns on df_beers and df_breweries
+    df_beers = df_beers.loc[:, ['abv', 'description', 'style_ibuMax', 'id', 'isOrganic', 'name', 'style_name', 'nameDisplay', 'style_fgMax', 'style_fgMin']]
+    df_breweries = df_breweries.loc[:, ['images_icon', 'name', 'website']]
+    df_breweries.rename(columns = {"name": "brewery_name"}, inplace = True)
+    df_breweries.loc[:,'images_icon'] = df_breweries['images_icon'].fillna(value = 'http://downloadicons.net/sites/default/files/beer-icons-46158.png')
+
+    #Concatenate df_breweries and df_beers
+    df_beers = pd.concat([df_beers, df_breweries], axis = 1)
+    df_beers.drop_duplicates(inplace=True)
 
     ########
     # Save

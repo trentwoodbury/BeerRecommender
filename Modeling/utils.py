@@ -32,10 +32,8 @@ COLUMNS = ['abv',
  'style_fgMin',
  'images_icon',
  'brewery_name',
- 'brewery_website',
- 'brewery_id',
- 'longitude',
- 'latitude']
+ 'website']
+
 
 def display_non_nan(df):
     ''' Displays a sampling of the non null values of all the columns

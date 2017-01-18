@@ -14,7 +14,6 @@ from sklearn.neighbors import NearestNeighbors
 
 from utils import get_dfs
 from utils import feature_select
-from utils import convert_columns
 from utils import normalize
 from utils import vectorize
 
@@ -46,7 +45,6 @@ from utils import vectorize
 def get_data():
     dfs = get_dfs()
     dfs = feature_select(dfs)
-    dfs = convert_columns(dfs)
     dfs = dfs.groupby('id').first().copy()
     dfs.reset_index(inplace = True)
     dfs_train = dfs.copy()
@@ -84,7 +82,7 @@ def train_knn(dfs, dfs_train, neighbors = 6 ):
     print "nn: \n", nn
     print dfs.iloc[524, :] == dfs.iloc[1, :]
 
-    if nn['id'] == '00gkb9':
+    if nn['id'][0] == 'SJTtiL':
         print "Test Passed! Model is working."
     else:
         print "Test Failed!"
@@ -130,7 +128,7 @@ if __name__ == '__main__':
 
     dfs, dfs_train, normalizer, tfidf_vec = get_data()
     knn = train_knn(dfs, dfs_train)
-    save_model(dfs_train, knn, normalizer, tfidf_vec)
+    save_model
 
 
 ##############
