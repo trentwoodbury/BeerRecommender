@@ -81,7 +81,7 @@ def display_beer():
         del DFS_ONE['id']
 
         name = DFS_ONE['name'].iloc[0]
-        brewery = DFS_ONE['brewery_name']
+        brewery = unicode(DFS_ONE['brewery_name'].iloc[0])
         style_name = "(" + DFS_ONE['style_name'].iloc[0] + ")"
     elif request.method == 'POST':
         # TODO: Add form validation
@@ -99,7 +99,6 @@ def display_beer():
 
         name = desc_text
         style_name = " (" + unicode(abv) + "%)"
-        brewery = ""
     else:
         raise ValueError("ValueError: Neither POST nor GET...")
 
@@ -142,7 +141,8 @@ def df_to_html(dfs, limit=10):
         html += " (" + unicode(r[1]['style_name']) + ")"
         html += " - " + unicode(r[1]['brewery_name'])
         html += "</h4>"
-        html += unicode(r[1]['description'])
+        html += unicode(r[1]['description']) + "<br>"
+        html += "<a href='{0}' target='_blank'><img src='{1}'></a>".format(r[1]['website'], r[1]['images_icon'])
         html += "</p>"
 
         entries += 1

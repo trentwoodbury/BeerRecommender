@@ -15,6 +15,7 @@ import os
 import re
 import multiprocessing as mp
 import threading
+import time
 
 import json
 from urllib2 import Request, urlopen, URLError
@@ -64,31 +65,39 @@ beer_co = beerdb[COLLECTION_NAME]
 
 ##########################################
 
-def insert_brewery_json():
-    ''' Takes the beer_id and inserts ONE entry into the Mongo database.
-        INPUT: beer_ids, output of get_beer_id_list
-        OUTPUT: None
-    '''
-
+def get_beer_ids():
     #loop through each beer in the MongoDB craft_beers collection
     beer_ids_list = list(beerdb.craft_beers.find({"id":{"$exists": "true"}}, {"id":1, "_id":0}))
     beer_ids = [id.values() for id in beer_ids_list]
+    return beer_ids
 
-    count = 0
+def insert_brewery_json(beer_ids):
+    ''' Takes a beer_id and inserts it into Mongo Database.
+        INPUT: beer_ids, output of get_beer_id_list
+        OUTPUT: None
+    '''
     for beer_id in beer_ids:
-        count +=1
-        if count % 1000 == 0:
-            print "{} beers completes".format(count)
+        time.sleep(.05)
         query_url = 'http://api.brewerydb.com/v2/beer/{}/breweries?key={}'.format(beer_id[0],api_key)
         query = Request(query_url)
         f = urlopen(query)
         brewery_str = f.read()
-
-        # Insert into MongoDB
         beer_co.insert_one(json.loads(brewery_str))
+
+
+
+# def multi_import(beer_ids):
+#     p = mp.Pool(processes = mp.cpu_count())
+#
+#     multi_proc = [p.apply_async(insert_brewery_json, (beer_id, )) for beer_id in beer_ids]
+#
+#     for proc in multi_proc:
+#         proc.get()
 
 
 
 if __name__ == "__main__":
     #This takes ~2 hours to run
-    insert_brewery_json()
+    BreweryDb.configure(api_key)
+    beer_ids = get_beer_ids()
+    insert_brewery_json(beer_ids)
