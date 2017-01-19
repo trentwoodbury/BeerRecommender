@@ -240,6 +240,15 @@ def get_beer_names():
     names_and_ids = beer_df[['name', 'id']]
     return names_and_ids.values
 
+def get_breweries():
+    beer_file = "beer_data_full.pkl"
+    beer_path = os.path.join(DATA_DIR, beer_file)
+    beer_df = pd.read_pickle(beer_path)
+    beer_df = feature_select(beer_df)
+    beer_df.sort_values('name', inplace = True)
+    breweries_and_ids = beer_df[['brewery_name', 'id']]
+    return breweries_and_ids.values
+
 def group_by_letter(names):
     alphabet = range(97, 123)
     groups = [[] for i in range(27)]
