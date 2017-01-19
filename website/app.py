@@ -22,6 +22,7 @@ import sqlite3
 from utils import flatten
 from utils import convert_columns
 from utils import get_beer_names
+from utils import get_breweries
 from utils import get_dfs
 from utils import get_dfs_train
 from utils import group_by_letter
@@ -212,6 +213,8 @@ def load_template_data_point():
 def main():
 
     beers = get_beer_names()
+    breweries = get_breweries()
+    beers = beers.join(breweries, on = 'id')
     beers_split = group_by_letter(beers)
     alphabet = ["#s"]
     alphabet.extend([chr(i) for i in range(65, 91)])
