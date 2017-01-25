@@ -214,11 +214,8 @@ def load_template_data_point():
 def main():
 
     beers = get_beer_names()
-    beers_index = beers.set_index('id')
     breweries = get_breweries()
-    breweries_index = breweries.set_index('id')
-    breweries_index['id_values'] = breweries.index.values
-    beers = beers_index.join(breweries_index, how = 'inner').values
+    beers = beers.merge(breweries, on='id', how = 'inner').values
     beers_split = group_by_letter(beers)
     alphabet = ["#s"]
     alphabet.extend([chr(i) for i in range(65, 91)])
