@@ -238,7 +238,7 @@ def get_beer_names():
     beer_df = feature_select(beer_df)
     beer_df.sort_values('name', inplace=True)
     names_and_ids = beer_df[['name', 'id']]
-    return names_and_ids.values
+    return names_and_ids
 
 def get_breweries():
     beer_file = "beer_data_full.pkl"
@@ -247,7 +247,7 @@ def get_breweries():
     beer_df = feature_select(beer_df)
     beer_df.sort_values('name', inplace = True)
     breweries_and_ids = beer_df[['brewery_name', 'id']]
-    return breweries_and_ids.values
+    return breweries_and_ids
 
 def group_by_letter(names):
     alphabet = range(97, 123)

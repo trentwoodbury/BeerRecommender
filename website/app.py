@@ -15,6 +15,7 @@ from flask import Flask
 from flask import render_template
 from flask import request
 from flask_bootstrap import Bootstrap
+import numpy as np
 import pandas as pd
 from sklearn.neighbors import NearestNeighbors
 import sqlite3
@@ -213,8 +214,11 @@ def load_template_data_point():
 def main():
 
     beers = get_beer_names()
+    beers_index = beers.set_index('id')
     breweries = get_breweries()
-    beers = beers.join(breweries, on = 'id').values
+    breweries_index = breweries.set_index('id')
+    breweries_index['id_values'] = breweries.index.values
+    beers = beers_index.join(breweries_index, how = 'inner').values
     beers_split = group_by_letter(beers)
     alphabet = ["#s"]
     alphabet.extend([chr(i) for i in range(65, 91)])
