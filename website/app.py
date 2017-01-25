@@ -11,83 +11,63 @@
 import os
 import cPickle as pickle
 from itertools import izip
+
+import pandas as pd
+from sklearn.neighbors import NearestNeighbors
 from flask import Flask
 from flask import render_template
 from flask import request
 from flask_bootstrap import Bootstrap
-import pandas as pd
-from sklearn.neighbors import NearestNeighbors
-import sqlite3
 
-from utils import flatten
-from utils import convert_columns
-from utils import get_beer_names
-from utils import get_dfs
-from utils import get_dfs_train
-from utils import group_by_letter
-from utils import feature_select
-from utils import normalize
-from utils import vectorize
+# Add local package context for importing:
+from package_context import recommender_package
+
+from recommender_package.utils.munging import raw_to_transform_data
+from recommender_package.utils.modeling import get_dfs
+from recommender_package.utils.website import get_beer_names
+from recommender_package.utils.website import group_by_letter
+from recommender_package.config import DATA_DIR
+from recommender_package.config import RECOMMENDER_MODEL_PKL
+from recommender_package.config import DEBUG_MODE
 
 
 ####################
 # Global variables
 ####################
 
-DATABASE = 'beer_db'
-
-# Global data -- pd.DataFrame and gl.SFrame
-DFS = None
-DFS_TRAIN = None
+# Global data -- pd.DataFrame
+DFS_BEER_ID = None
 # Template single data point, for prediction based on user input.
 DFS_ONE = None
 
-NORMALIZER = None
-VECTORIZER = None
-
-KNN = None
-
+TRANSFORMER = None
+RECOMMMENDER = None
 
 ###########
 # Web App
 ###########
 
-PROJECT_ROOT = os.path.dirname(__file__)
-DATA_DIR = os.path.join(PROJECT_ROOT, os.pardir, 'Data')
-
 application = app = Flask(__name__)
-
-# pulls in app configuration by looking for UPPERCASE variables
-#app.config.from_object(__name__)
-
-
-# function used for connecting to the database
-def connect_db():
-    return sqlite3.connect(app.config['DATABASE'])
 
 @app.route('/display_beer', methods=['GET', 'POST'])
 def display_beer():
 
+    global DFS_BEER_ID
     global DFS_ONE
-    global KNN
-    global NORMALIZER
-    global VECTORIZER
+    global RECOMMENDER
+    global TRANSFORMER
 
     if request.method == 'GET':
         beer_id = request.args.get('id')
-
-        # Load the selected entry into DFS_ONE
-        DFS_ONE = DFS[DFS['id'] == beer_id]
-        del DFS_ONE['id']
+        DFS_ONE = DFS_BEER_ID.loc[[beer_id]].copy()
 
         name = DFS_ONE['name'].iloc[0]
-        brewery = DFS_ONE['brewery_name']
+        brewery = DFS_ONE['brewery_name'].iloc[0]
         style_name = "(" + DFS_ONE['style_name'].iloc[0] + ")"
     elif request.method == 'POST':
         # TODO: Add form validation
         text = request.form['desc']
         desc_text = unicode(text.lower())
-
         abv = int(request.form['abv'])
 
         # Load generic data point into DFS_ONE
@@ -103,87 +83,63 @@ def display_beer():
     else:
         raise ValueError("ValueError: Neither POST nor GET...")
 
-    # Copy to local variable! (As these changes would persist)
-    query_pt_pd = DFS_ONE.copy()
-
-    print query_pt_pd
-    print DFS_ONE
-
-    query_pt_pd, _ = vectorize(query_pt_pd, vectorizer=VECTORIZER)
-    query_pt_pd, _ = normalize(query_pt_pd, normalizer=NORMALIZER)
-
-    ####################
-    # Predict on point
-    dist, ind = KNN.kneighbors(query_pt_pd)
-
-    nns = DFS.iloc[ind[0]].copy()
-
-    html = df_to_html(nns)
+    results = predict_results()
 
     return render_template('display_beer.html',
                            name=name,
                            style_name=style_name,
                            brewery=brewery,
-                           result_html=html)
+                           results=results)
 
 
-def df_to_html(dfs, limit=10):
-    ''' Returns block of HTML of up to 10 results
-        INPUT: pd.DataFrame -- DataFrame containing nearest neighbors.
-        OUTPUT: string
+def predict_results():
+    global DFS_BEER_ID
+    global DFS_ONE
+    global TRANSFORMER
+    global RECOMMENDER
 
-        TODO: Change this into Jinja2 in html file.
-    '''
-    html = ""
+    ####################
+    # Predict on point
+    dfs_one = DFS_ONE.copy()
+    dfs_one = TRANSFORMER.transform(dfs_one)
+    indices = RECOMMENDER.predict(dfs_one)
 
-    entries = 0
-    for r in dfs.iterrows():
-        html += "<p>"
-        html += "<h4>"
-        html += unicode(entries+1) + ".  "
-        html += unicode(r[1]['name'])
-        html += " (" + unicode(r[1]['style_name']) + ")"
-        html += " - " + unicode(r[1]['brewery_name'])
-        html += "</h4>"
-        html += unicode(r[1]['description'])
-        html += "</p>"
+    nns = DFS_BEER_ID.loc[indices].copy()
 
-        entries += 1
-        if entries >= limit:
-            break
+    beer_names = []
+    beer_style_names = []
+    beer_brewery_names = []
+    beer_descriptions = []
+    for r in nns.iterrows():
+        beer_names.append(r[1]['name'])
+        beer_style_names.append(r[1]['style_name'])
+        beer_brewery_names.append(r[1]['brewery_name'])
 
-    return html
+        if r[1]['description']:
+            beer_descriptions.append(r[1]['description'])
+        else:
+            beer_descriptions.append(r[1]['style_description'])
 
+    results = zip(beer_names, beer_style_names, beer_brewery_names,
+                 beer_descriptions)
 
-def load_training_data():
-    ''' Simply loads the DataFrames and does feature selection. '''
-    global DFS
-    global DFS_TRAIN
-
-    DFS = get_dfs()
-    DFS = feature_select(DFS)
-
-    DFS_TRAIN = get_dfs_train()
-
-    # Get rid of 'id' -- was used in graphlab
-#    if 'id' in DFS.columns.tolist():
-#        del DFS['id']
-    if 'id' in DFS_TRAIN.columns.tolist():
-        del DFS_TRAIN['id']
+    return results
 
 
 def load_model():
-    global KNN
-    global NORMALIZER
-    global VECTORIZER
+    global DFS_BEER_ID
+    global RECOMMENDER
+    global TRANSFORMER
 
-    model_file = os.path.join(DATA_DIR, 'knn_model.pkl')
+    DFS_BEER_ID = get_dfs()
+    DFS_BEER_ID = raw_to_transform_data(DFS_BEER_ID)
+
+    model_file = os.path.join(DATA_DIR, RECOMMENDER_MODEL_PKL)
     with open(model_file, 'rb') as f:
         model = pickle.load(f)
 
-    KNN = model['knn']
-    NORMALIZER = model['normalizer']
-    VECTORIZER = model['vectorizer']
+    RECOMMENDER = model['recommender']
+    TRANSFORMER = model['transformer']
 
 
 def load_template_data_point():
@@ -191,17 +147,17 @@ def load_template_data_point():
         of the full training dataset.  These values will be overwritten by
         whatever the web app visitor wishes, through the form input.
     '''
-    global DFS
+    global DFS_BEER_ID
     global DFS_ONE
 
     # Copy the first data point to fill in.
-    DFS_ONE = DFS.iloc[0:1].copy()
+    DFS_ONE = DFS_BEER_ID.iloc[0:1].copy()
 
     for col in DFS_ONE:
         # Fill via random sample
-        DFS_ONE[col] = DFS[col].sample(1).iloc[0]
+        DFS_ONE[col] = DFS_BEER_ID[col].sample(1).iloc[0]
 
-        DFS_ONE.loc[:,col] = DFS_ONE[col].astype(DFS[col].dtype)
+        DFS_ONE.loc[:,col] = DFS_ONE[col].astype(DFS_BEER_ID[col].dtype)
 
         if DFS_ONE[col].dtype == float \
            or DFS_ONE[col].dtype == int \
@@ -224,16 +180,23 @@ def main():
                            result=[beers_split, alphabet, index_range])
 
 
-#@app.before_first_request
 def load_data_model():
     Bootstrap(app)
 
-    load_training_data()
-    load_template_data_point()
     load_model()
+    load_template_data_point()
 
+
+def run():
+    if DEBUG_MODE == 'ON':
+        app.run(debug=True)
+    else:
+        app.run()
+
+########################################################
 # Load on startup (for elasticbeanstalk, when imported)
 load_data_model()
 
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    run()
