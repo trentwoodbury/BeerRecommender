@@ -30,14 +30,24 @@ except KeyError as e:
 ###################
 # Database config
 
-MONGO_USERNAME = os.environ['MONGO_USERNAME']
-MONGO_PASSWORD = os.environ['MONGO_PASSWORD']
-MONGO_HOSTNAME = os.environ['MONGO_HOSTNAME']
+try:
+    MONGO_USERNAME = os.environ['MONGO_USERNAME']
+    MONGO_PASSWORD = os.environ['MONGO_PASSWORD']
+    MONGO_HOSTNAME = os.environ['MONGO_HOSTNAME']
+except KeyError as e:
+    s = "Try setting environment variables {}, {}, {}"
+    print s.format('MONGO_USERNAME', 'MONGO_PASSWORD', 'MONGO_HOSTNAME')
+    print e
+    MONGO_USERNAME = ""
+    MONGO_PASSWORD = ""
+    MONGO_HOSTNAME = 'localhost'
+
 MONGO_PORT = '27017'
 BEER_DB = 'beer_db'
+CRAFT_BEERS_RAW_CO = 'craft_beers_raw'
 CRAFT_BEERS_CO = 'craft_beers'
-BREWERIES_CO = 'breweries_clean'
-LOCATIONS_CO = 'locations'
+BBL_RAW_CO = 'bbl_raw'
+BBL_CO = 'bbl'
 
 ###################
 # Modeling config
@@ -87,23 +97,17 @@ SINGLE_PARAM_ENDPOINTS = ["beer", "brewery", "category", "event",
 # Set up our custom queries
 
 ABV_PAGE = {4: 16, 5: 67, 6: 54, 7: 39, 8: 30, 9: 22, 10: 19}
-ABV_PAGE_TEST = {4: 16} 
 ABV_PAGE_QUERY_LIST = []
 for k, v in ABV_PAGE.iteritems():
     a = v * [k]
     b = range(v)
     ABV_PAGE_QUERY_LIST.extend(zip(a,b))
-ABV_PAGE_TEST_QUERY_LIST = []
-for k, v in ABV_PAGE_TEST.iteritems():
-    a = v * [k]
-    b = range(v)
-    ABV_PAGE_TEST_QUERY_LIST.extend(zip(a,b))
 
-BEERS_ENDPOINT = "{}/beer?key={}".format(DEFAULT_BASE_URI, API_KEY)
-BEERS_ENDPOINT += "&abv={}&p={}"
+BEER_ENDPOINT = "{}/beers?key={}".format(DEFAULT_BASE_URI, API_KEY)
+BEER_ENDPOINT += "&abv={}&p={}"
 
-BEERID_ENDPOINT = "{}/beer/".format(DEFAULT_BASE_URI) + "{}"
-BEERID_PARAMS = {'key': API_KEY,
-                 'withBreweries': 'Y',
-                 'withIngredients': 'Y',
-                 'withLocations': 'Y'}
+BBL_ENDPOINT = "{}/beer/".format(DEFAULT_BASE_URI) + "{}"
+BBL_PARAMS = {'key': API_KEY,
+              'withBreweries': 'Y',
+              'withIngredients': 'Y',
+              'withLocations': 'Y'}

@@ -12,14 +12,14 @@ import os
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
 
-from .config import MONGO_USERNAME
-from .config import MONGO_PASSWORD
-from .config import MONGO_HOSTNAME
-from .config import MONGO_PORT
-from .config import BEER_DB
-from .config import CRAFT_BEERS_CO
-from .config import BREWERIES_CO
-from .config import LOCATIONS_CO
+from ..config import MONGO_USERNAME
+from ..config import MONGO_PASSWORD
+from ..config import MONGO_HOSTNAME
+from ..config import MONGO_PORT
+from ..config import BEER_DB
+from ..config import CRAFT_BEERS_CO
+from ..config import BREWERIES_CO
+from ..config import LOCATIONS_CO
 
 
 class CollectionManager(object):
@@ -77,9 +77,12 @@ class CollectionManager(object):
 
         if not self.database:
             address = 'mongodb://'
-            address += self.username + ':'
-            address += self.password + '@'
-            address += self.hostname
+
+            if self.username:
+                address += self.username + ':'
+                address += self.password + '@'
+
+            address += self.hostname + ':' + self.port
 
             # Check server:
             try:

@@ -2,9 +2,9 @@ import requests
 import multiprocessing as mp
 import threading
 
-from ..utils.config import DEFAULT_BASE_URI
-from ..utils.config import SIMPLE_ENDPOINTS
-from ..utils.config import SINGLE_PARAM_ENDPOINTS
+from ..config import DEFAULT_BASE_URI
+from ..config import SIMPLE_ENDPOINTS
+from ..config import SINGLE_PARAM_ENDPOINTS
 
 
 COLLECTION = None
