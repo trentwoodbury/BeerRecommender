@@ -214,7 +214,7 @@ def main():
 
     beers = get_beer_names()
     breweries = get_breweries()
-    beers = beers.join(breweries, on = 'id')
+    beers = beers.join(breweries, on = 'id').values
     beers_split = group_by_letter(beers)
     alphabet = ["#s"]
     alphabet.extend([chr(i) for i in range(65, 91)])
