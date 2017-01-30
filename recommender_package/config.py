@@ -64,9 +64,11 @@ COLUMNS = ['abv',
  'style_name',
  'style_fgMax',
  'style_fgMin',
- 'images_icon',
- 'brewery_name',
- 'website']
+ 'breweries_images_icon',
+ 'breweries_name',
+ 'breweries_website',
+ 'breweries_locations_longitude',
+ 'breweries_locations_latitude']
 
 # Configuration for model files
 PROJECT_ROOT = os.path.dirname(__file__)

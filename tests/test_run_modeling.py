@@ -1,10 +1,18 @@
 import numpy as np
 
+from package_context import recommender_package
+
 from recommender_package.modeling.recommender import BeerTransformer
 from recommender_package.modeling.recommender import BeerKNN
 from recommender_package.utils.modeling import save_model
 from recommender_package.utils.modeling import get_dfs_train
 from recommender_package.utils.munging import raw_to_transform_data
+
+# Load test configuration:
+from recommender_package.test_config import DATA_DIR
+from recommender_package.test_config import DATA_TRAIN_PKL
+from recommender_package.test_config import RECOMMENDER_MODEL_PKL
+
 
 
 def print_test_matches(dfs, beer_transformer, beer_knn):
@@ -31,7 +39,7 @@ if __name__ == '__main__':
 
     ###########################
     # Load and transform data
-    dfs_train = get_dfs_train()
+    dfs_train = get_dfs_train(directory=DATA_DIR, filename=DATA_TRAIN_PKL)
 
     # Transform the data into a format for the BeerTransformer
     # -- Groupby beer id, take first
@@ -47,7 +55,8 @@ if __name__ == '__main__':
     beer_knn = BeerKNN(index=dfs_train_trans.index.values)
     beer_knn.fit(dfs_train_trans.values)
 
-    save_model(beer_knn, beer_transformer, dfs_train_trans)
+    save_model(beer_knn, beer_transformer, dfs_train_trans,
+               directory=DATA_DIR, filename=RECOMMENDER_MODEL_PKL)
 
     ##################
     # Print test

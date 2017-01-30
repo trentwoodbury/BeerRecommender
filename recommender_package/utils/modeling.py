@@ -22,8 +22,8 @@ from ..config import DATA_TRAIN_PKL
 from ..config import RECOMMENDER_MODEL_PKL
 
 
-def get_dfs():
-    data_file = os.path.join(DATA_DIR, DATA_FULL_PKL)
+def get_dfs(directory=DATA_DIR, filename=DATA_FULL_PKL):
+    data_file = os.path.join(directory, filename)
 
     with open(data_file, 'rb') as f:
         df = pickle.load(f)
@@ -33,8 +33,8 @@ def get_dfs():
     return dfs
 
 
-def get_dfs_train():
-    data_file = os.path.join(DATA_DIR, DATA_TRAIN_PKL)
+def get_dfs_train(directory=DATA_DIR, filename=DATA_TRAIN_PKL):
+    data_file = os.path.join(directory, filename)
 
     with open(data_file, 'rb') as f:
         df = pickle.load(f)
@@ -89,16 +89,19 @@ def vectorize(dfs, vectorizer=None):
     return dfs, tfidf
 
 
-def save_model(recommender, transformer, data):
-    model_file = os.path.join(DATA_DIR, RECOMMENDER_MODEL_PKL)
+def save_model(recommender, transformer, data,
+               directory=DATA_DIR,
+               filename=RECOMMENDER_MODEL_PKL):
+    model_file = os.path.join(directory, filename)
 
     with open(model_file, 'wb') as f:
         pickle.dump({'recommender': recommender,
                      'transformer': transformer,
                      'data': data}, f)
 
-def load_model():
-    model_file = os.path.join(DATA_DIR, RECOMMENDER_MODEL_PKL)
+def load_model(directory=DATA_DIR,
+               filename=RECOMMENDER_MODEL_PKL):
+    model_file = os.path.join(directory, filename)
 
     with open(model_file, 'rb') as f:
         model = pickle.load(f)

@@ -18,8 +18,6 @@ from ..config import MONGO_HOSTNAME
 from ..config import MONGO_PORT
 from ..config import BEER_DB
 from ..config import CRAFT_BEERS_CO
-from ..config import BREWERIES_CO
-from ..config import LOCATIONS_CO
 
 
 class CollectionManager(object):

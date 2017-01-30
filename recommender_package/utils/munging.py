@@ -8,6 +8,8 @@
 '''
 from collections import MutableMapping
 import pandas as pd
+import numpy as np
+from unidecode import unidecode
 
 from ..config import COLUMNS
 from ..config import BEER_ID
@@ -69,7 +71,9 @@ def feature_select(dfs):
 
 
 def raw_to_transform_data(dfs_raw):
+    ''' Pretty self explanatory: group by beer id, taking first, and then
+        running feature selection, based on COLUMNS from the config.
+    '''
     dfs_transform = dfs_raw.groupby(BEER_ID).first().copy()
-#    dfs.reset_index(inplace = True)
     dfs_transform = feature_select(dfs_transform)
     return dfs_transform
