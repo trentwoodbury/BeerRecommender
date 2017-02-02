@@ -4,8 +4,6 @@ import cPickle as pickle
 
 import pandas as pd
 
-from package_context import recommender_package
-
 from recommender_package.database.collection import CollectionManager
 from recommender_package.utils.munging import convert_columns
 from recommender_package.config import BEER_DB

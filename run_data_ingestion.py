@@ -12,9 +12,6 @@
 '''
 import sys
 
-# Local package context
-from package_context import recommender_package
-
 from recommender_package.api.etl import DataETL
 from recommender_package.munging.process import NDLReducer
 from recommender_package.database.collection import CollectionManager
@@ -33,8 +30,8 @@ from recommender_package.config import BBL_PARAMS
 def populated(collection):
     if collection:
         if collection.count():
-            raise ValueError("Collection {!r} populated".format(
-                             collection.name))
+#            raise ValueError("Collection {!r} populated".format(
+#                             collection.name))
             return True
         else:
             return False

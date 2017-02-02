@@ -59,7 +59,7 @@ class DataETL(object):
 
     def run_sequential(self):
         for query_one in self.query_list:
-            self._insert_one(query_one)
+            insert_one(self.url_endpoint, self.params, query_one)
 
 
     def run_parallel(self):
@@ -77,7 +77,7 @@ class DataETL(object):
         threads = []
 
         for query_one in self.query_list:
-            threads.append(threading.Thread(target=self._insert_one,
+            threads.append(threading.Thread(target=insert_one,
                                             args=([query_one])))
 
         for th in threads:
