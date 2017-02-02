@@ -23,7 +23,8 @@ from flask_bootstrap import Bootstrap
 from package_context import recommender_package
 
 from recommender_package.utils.munging import raw_to_transform_data
-from recommender_package.utils.modeling import get_dfs
+from recommender_package.utils.modeling import get_dfs_train
+from recommender_package.utils.modeling import load_model
 from recommender_package.utils.website import get_beer_names
 from recommender_package.utils.website import group_by_letter
 from recommender_package.config import DATA_DIR
@@ -62,7 +63,7 @@ def display_beer():
         DFS_ONE = DFS_BEER_ID.loc[[beer_id]].copy()
 
         name = DFS_ONE['name'].iloc[0]
-        brewery = DFS_ONE['brewery_name'].iloc[0]
+        brewery = DFS_ONE['breweries_name'].iloc[0]
         style_name = "(" + DFS_ONE['style_name'].iloc[0] + ")"
     elif request.method == 'POST':
         # TODO: Add form validation
@@ -113,7 +114,7 @@ def predict_results():
     for r in nns.iterrows():
         beer_names.append(r[1]['name'])
         beer_style_names.append(r[1]['style_name'])
-        beer_brewery_names.append(r[1]['brewery_name'])
+        beer_brewery_names.append(r[1]['breweries_name'])
 
         if r[1]['description']:
             beer_descriptions.append(r[1]['description'])
@@ -126,20 +127,18 @@ def predict_results():
     return results
 
 
-def load_model():
-    global DFS_BEER_ID
-    global RECOMMENDER
-    global TRANSFORMER
 
-    DFS_BEER_ID = get_dfs()
-    DFS_BEER_ID = raw_to_transform_data(DFS_BEER_ID)
+@app.route('/')
+def main():
 
-    model_file = os.path.join(DATA_DIR, RECOMMENDER_MODEL_PKL)
-    with open(model_file, 'rb') as f:
-        model = pickle.load(f)
+    beers = get_beer_names()
+    beers_split = group_by_letter(beers)
+    alphabet = ["#s"]
+    alphabet.extend([chr(i) for i in range(65, 91)])
+    index_range = range(27)
 
-    RECOMMENDER = model['recommender']
-    TRANSFORMER = model['transformer']
+    return render_template('search_table.html',
+                           result=[beers_split, alphabet, index_range])
 
 
 def load_template_data_point():
@@ -167,23 +166,18 @@ def load_template_data_point():
             DFS_ONE[col] = ""
 
 
-@app.route('/')
-def main():
-
-    beers = get_beer_names()
-    beers_split = group_by_letter(beers)
-    alphabet = ["#s"]
-    alphabet.extend([chr(i) for i in range(65, 91)])
-    index_range = range(27)
-
-    return render_template('search_table.html',
-                           result=[beers_split, alphabet, index_range])
-
-
 def load_data_model():
+    global DFS_BEER_ID
+    global RECOMMENDER
+    global TRANSFORMER
+
     Bootstrap(app)
 
-    load_model()
+    RECOMMENDER, TRANSFORMER, _ = load_model()
+
+    DFS_BEER_ID = get_dfs_train()
+    DFS_BEER_ID = raw_to_transform_data(DFS_BEER_ID)
+
     load_template_data_point()
 
 
