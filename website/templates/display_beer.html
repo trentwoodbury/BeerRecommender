@@ -68,7 +68,8 @@
                     </div>
                 </div>
 				<div class="col-lg-12 text-center">
-					<h3><span class="name">{{name}} - {{brewery}}</span>
+					<h3><span class="name">{{name}} <br> {{brewery}}</span>
+                    <br>
 					<span class="name">{{style_name}}</span>
 					</h3>
 				</div>
@@ -81,7 +82,12 @@
         <div class="container">
             <div class="row">
 			    <div class="col-lg-4 col-lg-offset-2">
-					{{result_html|safe}}
+					{% for r in results %}
+					<p>
+						<h4>{{loop.index}}. {{r[0]}} - {{r[2]}} </h4>
+						{{r[3]}}
+					</p>
+					{% endfor %}
 				</div>
             </div>
         </div>
