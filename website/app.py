@@ -33,23 +33,6 @@ from bokeh.plotting import figure
 from bokeh.server.server import Server
 from bokeh.util.browser import view
 
-import numpy as np
-import pandas as pd
-from sklearn.neighbors import NearestNeighbors
-import sqlite3
-
-from utils import flatten
-from utils import convert_columns
-from utils import get_beer_names
-from utils import get_breweries
-from utils import get_dfs
-from utils import get_dfs_train
-from utils import group_by_letter
-from utils import feature_select
-from utils import normalize
-from utils import vectorize
-
-
 # Add local package context for importing:
 from package_context import recommender_package
 
@@ -66,7 +49,6 @@ from recommender_package.config import DATA_DIR
 from recommender_package.config import RECOMMENDER_MODEL_PKL
 from recommender_package.config import DEBUG_MODE
 from recommender_package.config import COLUMNS
-
 
 
 ####################
@@ -121,19 +103,6 @@ def display_beer():
     else:
         raise ValueError("ValueError: Neither POST nor GET...")
 
-    # Copy to local variable! (As these changes would persist)
-    query_pt_pd = DFS_ONE.copy()
-
-    query_pt_pd, _ = vectorize(query_pt_pd, vectorizer=VECTORIZER)
-    query_pt_pd, _ = normalize(query_pt_pd, normalizer=NORMALIZER)
-
-    ####################
-    # Predict on point
-    dist, ind = KNN.kneighbors(query_pt_pd)
-
-    nns = DFS.iloc[ind[0]].copy()
-
-    html = df_to_html(nns)
     results = predict_results()
 
     return render_template('display_beer.html',
@@ -141,34 +110,6 @@ def display_beer():
                            style_name=style_name,
                            brewery=brewery,
                            results=results)
-
-def df_to_html(dfs, limit=10):
-    ''' Returns block of HTML of up to 10 results
-        INPUT: pd.DataFrame -- DataFrame containing nearest neighbors.
-        OUTPUT: string
-
-        TODO: Change this into Jinja2 in html file.
-    '''
-    html = ""
-
-    entries = 0
-    for r in dfs.iterrows():
-        html += "<p>"
-        html += "<h4>"
-        html += unicode(entries+1) + ".  "
-        html += unicode(r[1]['name'])
-        html += " (" + unicode(r[1]['style_name']) + ")"
-        html += " - " + unicode(r[1]['brewery_name'])
-        html += "</h4>"
-        html += unicode(r[1]['description']) + "<br>"
-        html += "<a href='{0}' target='_blank'><img src='{1}'></a>".format(r[1]['website'], r[1]['images_icon'])
-        html += "</p>"
-
-        entries += 1
-        if entries >= limit:
-            break
-
-    return html
 
 
 def predict_results():
