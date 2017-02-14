@@ -24,16 +24,16 @@ import pandas as pd
 from sklearn.neighbors import NearestNeighbors
 import sqlite3
 
-from utils import flatten
-from utils import convert_columns
-from utils import get_beer_names
-from utils import get_breweries
-from utils import get_dfs
-from utils import get_dfs_train
-from utils import group_by_letter
-from utils import feature_select
-from utils import normalize
-from utils import vectorize
+from recommender_package.utils.website import flatten
+from recommender_package.utils.website import convert_columns
+from recommender_package.utils.website import get_beer_names
+from recommender_package.utils.website import get_breweries
+from recommender_package.utils.website import get_dfs
+from recommender_package.utils.website import get_dfs_train
+from recommender_package.utils.website import group_by_letter
+from recommender_package.utils.website import feature_select
+from recommender_package.utils.website import normalize
+from recommender_package.utils.website import vectorize
 
 
 # Add local package context for importing:
