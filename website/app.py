@@ -61,24 +61,50 @@ DFS_ONE = None
 
 TRANSFORMER = None
 RECOMMMENDER = None
+DATABASE = 'beer_db'
+
+# Global data -- pd.DataFrame and gl.SFrame
+DFS = None
+DFS_TRAIN = None
+# Template single data point, for prediction based on user input.
+
+NORMALIZER = None
+VECTORIZER = None
+
+KNN = None
+
 
 ###########
 # Web App
 ###########
 
+PROJECT_ROOT = os.path.dirname(__file__)
+DATA_DIR = os.path.join(PROJECT_ROOT, os.pardir, 'Data')
+
 application = app = Flask(__name__)
+
+# pulls in app configuration by looking for UPPERCASE variables
+#app.config.from_object(__name__)
+
+
+# function used for connecting to the database
+def connect_db():
+    return sqlite3.connect(app.config['DATABASE'])
 
 @app.route('/display_beer', methods=['GET', 'POST'])
 def display_beer():
 
-    global DFS_BEER_ID
     global DFS_ONE
-    global RECOMMENDER
-    global TRANSFORMER
+    global KNN
+    global NORMALIZER
+    global VECTORIZER
 
     if request.method == 'GET':
         beer_id = request.args.get('id')
-        DFS_ONE = DFS_BEER_ID.loc[[beer_id]].copy()
+
+        # Load the selected entry into DFS_ONE
+        DFS_ONE = DFS[DFS['id'] == beer_id]
+        del DFS_ONE['id']
 
         name = DFS_ONE['name'].iloc[0]
         brewery = unicode(DFS_ONE['brewery_name'].iloc[0])
@@ -87,6 +113,7 @@ def display_beer():
         # TODO: Add form validation
         text = request.form['desc']
         desc_text = unicode(text.lower())
+
         abv = int(request.form['abv'])
 
         # Load generic data point into DFS_ONE
@@ -114,19 +141,18 @@ def display_beer():
     nns = DFS.iloc[ind[0]].copy()
 
     html = df_to_html(nns)
-    results = predict_results()
 
     return render_template('display_beer.html',
                            name=name,
                            style_name=style_name,
                            brewery=brewery,
-                           results=results)
+                           result_html=html)
+
 
 def df_to_html(dfs, limit=10):
     ''' Returns block of HTML of up to 10 results
         INPUT: pd.DataFrame -- DataFrame containing nearest neighbors.
         OUTPUT: string
-
         TODO: Change this into Jinja2 in html file.
     '''
     html = ""
@@ -151,52 +177,32 @@ def df_to_html(dfs, limit=10):
     return html
 
 
-def predict_results():
-    global DFS_BEER_ID
-    global DFS_ONE
-    global TRANSFORMER
-    global RECOMMENDER
+def load_training_data():
+    ''' Simply loads the DataFrames and does feature selection. '''
+    global DFS
+    global DFS_TRAIN
+    DFS = get_dfs()
+    DFS_TRAIN = get_dfs_train()
 
-    ####################
-    # Predict on point
-    dfs_one = DFS_ONE.copy()
-    dfs_one = TRANSFORMER.transform(dfs_one)
-    indices = RECOMMENDER.predict(dfs_one)
-
-    nns = DFS_BEER_ID.loc[indices].copy()
-
-    beer_names = []
-    beer_style_names = []
-    beer_brewery_names = []
-    beer_descriptions = []
-    for r in nns.iterrows():
-        beer_names.append(r[1]['name'])
-        beer_style_names.append(r[1]['style_name'])
-        beer_brewery_names.append(r[1]['breweries_name'])
-
-        if r[1]['description']:
-            beer_descriptions.append(r[1]['description'])
-        else:
-            beer_descriptions.append(r[1]['style_description'])
-
-    results = zip(beer_names, beer_style_names, beer_brewery_names,
-                 beer_descriptions)
-
-    return results
+    # Get rid of 'id' -- was used in graphlab
+#    if 'id' in DFS.columns.tolist():
+#        del DFS['id']
+    if 'id' in DFS_TRAIN.columns.tolist():
+        del DFS_TRAIN['id']
 
 
+def load_model():
+    global KNN
+    global NORMALIZER
+    global VECTORIZER
 
-@app.route('/')
-def main():
+    model_file = os.path.join(DATA_DIR, 'knn_model.pkl')
+    with open(model_file, 'rb') as f:
+        model = pickle.load(f)
 
-    beers = get_beer_names()
-    beers_split = group_by_letter(beers)
-    alphabet = ["#s"]
-    alphabet.extend([chr(i) for i in range(65, 91)])
-    index_range = range(27)
-
-    return render_template('search_table.html',
-                           result=[beers_split, alphabet, index_range])
+    KNN = model['knn']
+    NORMALIZER = model['normalizer']
+    VECTORIZER = model['vectorizer']
 
 
 def load_template_data_point():
@@ -204,17 +210,17 @@ def load_template_data_point():
         of the full training dataset.  These values will be overwritten by
         whatever the web app visitor wishes, through the form input.
     '''
-    global DFS_BEER_ID
+    global DFS
     global DFS_ONE
 
     # Copy the first data point to fill in.
-    DFS_ONE = DFS_BEER_ID.iloc[0:1].copy()
+    DFS_ONE = DFS.iloc[0:1].copy()
 
     for col in DFS_ONE:
         # Fill via random sample
-        DFS_ONE[col] = DFS_BEER_ID[col].sample(1).iloc[0]
+        DFS_ONE[col] = DFS[col].sample(1).iloc[0]
 
-        DFS_ONE.loc[:,col] = DFS_ONE[col].astype(DFS_BEER_ID[col].dtype)
+        DFS_ONE.loc[:,col] = DFS_ONE[col].astype(DFS[col].dtype)
 
         if DFS_ONE[col].dtype == float \
            or DFS_ONE[col].dtype == int \
@@ -222,7 +228,6 @@ def load_template_data_point():
             pass
         else:
             DFS_ONE[col] = ""
-
 
 
 @app.route('/')
@@ -236,32 +241,20 @@ def main():
     alphabet.extend([chr(i) for i in range(65, 91)])
     index_range = range(27)
 
+    return render_template('search_table.html',
+                           result=[beers_split, alphabet, index_range])
+
+
+#@app.before_first_request
 def load_data_model():
-    global DFS_BEER_ID
-    global RECOMMENDER
-    global TRANSFORMER
-
-
     Bootstrap(app)
 
-    RECOMMENDER, TRANSFORMER, _ = load_model()
-
-    DFS_BEER_ID = get_dfs_train()
-    DFS_BEER_ID = raw_to_transform_data(DFS_BEER_ID)
-
+    load_training_data()
     load_template_data_point()
+    load_model()
 
-
-def run():
-    if DEBUG_MODE == 'ON':
-        app.run(debug=True)
-    else:
-        app.run()
-
-########################################################
 # Load on startup (for elasticbeanstalk, when imported)
 load_data_model()
 
-
 if __name__ == '__main__':
-    run()
+    app.run(debug=True)
