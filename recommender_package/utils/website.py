@@ -4,17 +4,17 @@
     Some useful functions for working with data.
 '''
 
-import os
+from ..config import DATA_DIR
 import cPickle as pickle
 from collections import MutableMapping
-
-import pandas as pd
 import numpy as np
-from unidecode import unidecode
+import os
+import pandas as pd
 from pymongo import MongoClient
 from pymongo.errors import ServerSelectionTimeoutError
 from sklearn.preprocessing import StandardScaler
 from sklearn.feature_extraction.text import TfidfVectorizer
+from unidecode import unidecode
 
 def display_non_nan(df):
     ''' Displays a sampling of the non null values of all the columns
@@ -77,7 +77,6 @@ def get_beer_names():
     beer_file = "beer_data_full.pkl"
     beer_path = os.path.join(DATA_DIR, beer_file)
     beer_df =  pd.read_pickle(beer_path)
-    beer_df = feature_select(beer_df)
     beer_df.sort_values('name', inplace=True)
     names_and_ids = beer_df[['name', 'id']]
     return names_and_ids
@@ -86,7 +85,6 @@ def get_breweries():
     beer_file = "beer_data_full.pkl"
     beer_path = os.path.join(DATA_DIR, beer_file)
     beer_df = pd.read_pickle(beer_path)
-    beer_df = feature_select(beer_df)
     beer_df.sort_values('name', inplace = True)
     breweries_and_ids = beer_df[['brewery_name', 'id']]
     return breweries_and_ids
@@ -104,7 +102,6 @@ def group_by_letter(names):
 
 def get_dfs():
     data_file = os.path.join(DATA_DIR, 'beer_data_full.pkl')
-
     with open(data_file, 'rb') as f:
         df = pickle.load(f)
 
@@ -121,24 +118,6 @@ def get_dfs_train():
     dfs_train = df.copy()
 
     return dfs_train
-
-def feature_select(dfs):
-    global COLUMNS
-
-    # Feature selection
-    for col in dfs:
-        if pd.isnull(dfs[col]).sum() > 5000:
-            del dfs[col]
-
-    # Simplest possible -- Drop NaN rows ((6928, 30)):
-    dfs.dropna(axis=0, inplace=True)
-
-    dfs['isOrganic'] = dfs['isOrganic'].apply(lambda x: True if x == 'Y'
-                                                             else False)
-
-    dfs = dfs[COLUMNS].copy()
-
-    return dfs
 
 def normalize(dfs, normalizer=None):
 
