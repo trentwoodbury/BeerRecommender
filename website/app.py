@@ -218,18 +218,6 @@ def load_template_data_point():
             DFS_ONE[col] = ""
 
 
-
-@app.route('/')
-def main():
-
-    beers = get_beer_names()
-    breweries = get_breweries()
-    beers = beers.merge(breweries, on='id', how = 'inner').values
-    beers_split = group_by_letter(beers)
-    alphabet = ["#s"]
-    alphabet.extend([chr(i) for i in range(65, 91)])
-    index_range = range(27)
-
 def load_data_model():
     global DFS_BEER_ID
     global DFS_NMF_DATA
