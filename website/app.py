@@ -83,7 +83,7 @@ def display_beer():
         DFS_ONE = DFS_BEER_ID.loc[[beer_id]].copy()
 
         name = DFS_ONE['name'].iloc[0]
-        brewery = unicode(DFS_ONE['brewery_name'].iloc[0])
+        brewery = unicode(DFS_ONE['breweries_name'].iloc[0])
         style_name = "(" + DFS_ONE['style_name'].iloc[0] + ")"
     elif request.method == 'POST':
         # TODO: Add form validation
@@ -164,7 +164,6 @@ def display_plots():
 
 @app.route('/')
 def main():
-
     beers = get_beer_names()
     beers_split = group_by_letter(beers)
     alphabet = ["#s"]
@@ -223,7 +222,6 @@ def load_data_model():
     global DFS_NMF_DATA
     global RECOMMENDER
     global TRANSFORMER
-
 
     Bootstrap(app)
 

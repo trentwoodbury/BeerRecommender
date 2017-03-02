@@ -103,8 +103,8 @@ def topic_plot(W, H, feature_names, dfs, offline=False):
                tools="hover,save,wheel_zoom,pan,reset",
                x_range=list(words), y_range=list(names))
 
-    p.plot_width = 800
-    p.plot_height = 800
+    p.plot_width = 600
+    p.plot_height = 600
     p.grid.grid_line_color = None
     p.axis.axis_line_color = None
     p.axis.major_tick_line_color = None

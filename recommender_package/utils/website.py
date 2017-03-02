@@ -25,8 +25,9 @@ def get_beer_names():
     beer_df = raw_to_transform_data(beer_df)
     beer_df.sort_values('name', inplace=True)
     beer_df.reset_index(inplace=True)
-    names_and_ids = beer_df[['name', 'id']]
+    names_and_ids = beer_df[['name', 'id', 'breweries_name']]
     return names_and_ids.values
+
 
 def group_by_letter(names):
     alphabet = range(97, 123)
