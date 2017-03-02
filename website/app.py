@@ -152,14 +152,16 @@ def display_plots():
 #    s_scores = topic_silhouettes(DFS_NMF_DATA.values, topic_range=tr)
 #    plot = topic_silhouettes_plot(s_scores, tr)
 #    s_script, s_div = components(plot)
-    s_script = None
-    s_div = None
-    topics_script = autoload_server(model=None,
-                                    url='http://localhost:5006/bkapp')
-    return render_template("display_plots.html",
-                           script=topics_script,
-                           sscript=s_script,
-                           sdiv=s_div)
+
+#    s_script = None
+#    s_div = None
+#    topics_script = autoload_server(model=None,
+#                                    url='http://localhost:5006/bkapp')
+#    return render_template("display_plots.html",
+#                           script=topics_script,
+#                           sscript=s_script,
+#                           sdiv=s_div)
+    pass
 
 
 @app.route('/')
