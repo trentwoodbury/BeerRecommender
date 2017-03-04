@@ -13,7 +13,7 @@ import unicodedata
 import pandas as pd
 import numpy as np
 import pattern.en as en
-from nltk.corpus import stopwords
+#from nltk.corpus import stopwords
 from sklearn.feature_extraction.stop_words import ENGLISH_STOP_WORDS
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
@@ -32,7 +32,8 @@ from recommender_package.utils.munging import raw_to_transform_data
 
 # Load these once globally
 PARSER = None
-STOP_WORDS = set(stopwords.words('english') + list(ENGLISH_STOP_WORDS))
+#STOP_WORDS = set(stopwords.words('english') + list(ENGLISH_STOP_WORDS))
+STOP_WORDS = set(list(ENGLISH_STOP_WORDS))
 PUNCT_TBL = dict.fromkeys(i for i in xrange(sys.maxunicode)
                         if unicodedata.category(unichr(i)).startswith('P'))
 
@@ -103,8 +104,8 @@ def topic_plot(W, H, feature_names, dfs, offline=False):
                tools="hover,save,wheel_zoom,pan,reset",
                x_range=list(words), y_range=list(names))
 
-    p.plot_width = 800
-    p.plot_height = 800
+    p.plot_width = 600
+    p.plot_height = 600
     p.grid.grid_line_color = None
     p.axis.axis_line_color = None
     p.axis.major_tick_line_color = None

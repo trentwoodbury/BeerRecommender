@@ -83,7 +83,7 @@ def display_beer():
         DFS_ONE = DFS_BEER_ID.loc[[beer_id]].copy()
 
         name = DFS_ONE['name'].iloc[0]
-        brewery = unicode(DFS_ONE['brewery_name'].iloc[0])
+        brewery = unicode(DFS_ONE['breweries_name'].iloc[0])
         style_name = "(" + DFS_ONE['style_name'].iloc[0] + ")"
     elif request.method == 'POST':
         # TODO: Add form validation
@@ -152,19 +152,20 @@ def display_plots():
 #    s_scores = topic_silhouettes(DFS_NMF_DATA.values, topic_range=tr)
 #    plot = topic_silhouettes_plot(s_scores, tr)
 #    s_script, s_div = components(plot)
-    s_script = None
-    s_div = None
-    topics_script = autoload_server(model=None,
-                                    url='http://localhost:5006/bkapp')
-    return render_template("display_plots.html",
-                           script=topics_script,
-                           sscript=s_script,
-                           sdiv=s_div)
+
+#    s_script = None
+#    s_div = None
+#    topics_script = autoload_server(model=None,
+#                                    url='http://localhost:5006/bkapp')
+#    return render_template("display_plots.html",
+#                           script=topics_script,
+#                           sscript=s_script,
+#                           sdiv=s_div)
+    pass
 
 
 @app.route('/')
 def main():
-
     beers = get_beer_names()
     beers_split = group_by_letter(beers)
     alphabet = ["#s"]
@@ -218,24 +219,11 @@ def load_template_data_point():
             DFS_ONE[col] = ""
 
 
-
-@app.route('/')
-def main():
-
-    beers = get_beer_names()
-    breweries = get_breweries()
-    beers = beers.merge(breweries, on='id', how = 'inner').values
-    beers_split = group_by_letter(beers)
-    alphabet = ["#s"]
-    alphabet.extend([chr(i) for i in range(65, 91)])
-    index_range = range(27)
-
 def load_data_model():
     global DFS_BEER_ID
     global DFS_NMF_DATA
     global RECOMMENDER
     global TRANSFORMER
-
 
     Bootstrap(app)
 
